@@ -1,0 +1,18 @@
+{% extends "../_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <input type="submit" value="登入" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block nav %}
+    <li class="nav-item">
+        <a href="{% url 'signup' %}" class="nav-link">+ 註冊 +</a>
+    </li>
+{% endblock nav %}

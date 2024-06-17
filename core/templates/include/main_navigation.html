@@ -1,0 +1,73 @@
+{% comment %} {% load helper_tags %} {% endcomment %}
+{% with request.resolver_match.url_name as url_name %}
+    <nav id="mainnav-container" class="mainnav">
+        <div class="mainnav__inner">
+            <div class="mainnav__top-content scrollable-content pb-5">
+                <div class="mainnav__categoriy py-3">
+                    {% comment %} <h6 class="mainnav__caption mt-0 fw-bold">Navigation</h6> {% endcomment %}
+                    <h6 class="mainnav__caption mt-0 fw-bold">Links</h6>
+                    <ul class="mainnav__menu nav flex-column">
+                        <li class="nav-item">
+                            <a href="{% url 'home' %}"
+                               class="nav-link mininav-toggle {% if url_name == 'home' %}active{% endif %}">
+                                <i class="pli-home fs-5 me-2"></i>
+                                <span class="nav-label mininav-content ms-1">
+                                    <span data-popper-arrow="" class="arrow"></span>
+                                    首頁
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mainnav__categoriy py-3">
+                    {% comment %} <h6 class="mainnav__caption mt-0 fw-bold">Navigation</h6> {% endcomment %}
+                    <h6 class="mainnav__caption mt-0 fw-bold">Navigations</h6>
+                    <ul class="mainnav__menu nav flex-column">
+                        <li class="nav-item has-sub">
+                            <a href="#" class="mininav-toggle nav-link collapsed">
+                                <i class="pli-pencil fs-5 me-2"></i>
+                                <span class="nav-label ms-1">公告欄管理</span>
+                            </a>
+                            <ul class="mininav-content nav collapse">
+                                <li data-popper-arrow class="arrow"></li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">公告欄設定</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">總部查看公告欄</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">門市查看公告欄</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-sub">
+                            <a href="#" class="mininav-toggle nav-link collapsed">
+                                <i class="pli-receipt-4 fs-5 me-2"></i>
+                                <span class="nav-label ms-1">Check List</span>
+                            </a>
+                            <ul class="mininav-content nav collapse">
+                                <li data-popper-arrow class="arrow"></li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">Check List 設定</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">總部查看 Check List</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">每日 Check List</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">門市未完成清單下載</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link disabled">臨時作業完成度管理</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endwith %}

@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local development settings
+.env
+
+# Database
+*.sqlite3
+migrations
+
+# Log files
+*.log
+
+# nodejs packages
+node_modules
+
+# compiled static fiels
+staticfiles
+
+# media files
+media
+
+# csv files
+*.csv
+
+# purchase files
+assets/js/nifty
+assets/js/nifty.js
+assets/icons
+assets/fonts
+assets/css/demo-purpose
+assets/scss/nifty-admin
+assets/scss/vendors
+assets/scss/styles.scss
+assets/webpack_bundles
+
+# webpack stats
+webpack-stats.json

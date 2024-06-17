@@ -1,0 +1,54 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "makefile.makefilePath": "./MakeFile",
+        "search.exclude": {
+            "**/node_modules": true,
+            "**/.vscode": true,
+            "**/.github": true,
+            "**/assets": false,
+            "**/staticfiles": true,
+            "**/migrations": true,
+            "*.code-workspace": true
+        },
+        "[html][django-html]": {
+            "editor.formatOnSave": true,
+            "editor.defaultFormatter": "monosans.djlint"
+        },
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter",
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": "explicit"
+            }
+        },
+        "[javascript]": {
+            "editor.formatOnSave": true
+        },
+        "isort.args": ["--profile", "black"],
+        "files.associations": {
+            "*.html": "django-html",
+            "*.js": "javascript"
+        },
+        "todohighlight.exclude": [
+            "**/node_modules/**",
+            "**/bower_components/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/.vscode/**",
+            "**/.github/**",
+            "**/_output/**",
+            "**/*.min.*",
+            "**/*.map",
+            "**/.next/**",
+            "**/static/**",
+            "**/staticfiles/**",
+            "**/migrations/**"
+        ],
+        "terminal.integrated.cwd": "${workspaceFolder}"
+    }
+}

@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "webpack_loader",
     # local apps
     "core",
+    "branch",
+    "announcement",
 ]
 
 MIDDLEWARE = [

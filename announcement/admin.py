@@ -3,6 +3,11 @@ from django.contrib import admin
 from .models import Announcement, AnnouncementAttachment
 
 
+class AttachmentInline(admin.TabularInline):
+    model = Announcement.attachments.through
+    extra = 1
+
+
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = (
@@ -10,10 +15,17 @@ class AnnouncementAdmin(admin.ModelAdmin):
         "get_content",
         "effective_start_date",
         "effective_end_date",
+        "author",
     )
 
+    exclude = ("attachments",)
+
+    inlines = [AttachmentInline]
+
     def get_content(self, obj):
-        return obj.content[:50]
+        if len(obj.content) > 50:
+            return obj.content[:50] + "..."
+        return obj.content
 
     get_content.short_description = "content"
 

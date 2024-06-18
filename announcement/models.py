@@ -3,6 +3,7 @@ from django.utils import timezone
 
 
 class Announcement(models.Model):
+    author = models.ForeignKey("core.User", on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100)
     content = models.TextField()
     effective_start_date = models.DateField(default=timezone.now)

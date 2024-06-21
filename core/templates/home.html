@@ -2,9 +2,8 @@
 {% block content %}
     <div class="card">
         <div class="card-body">
-            <a href="{% url 'announcement_create' %}">
-                <button class="btn btn-primary">Create Announcement</button>
-            </a>
+            <a class="btn btn-primary" href="{% url 'announcement_create' %}">Create Announcement</a>
+            <a class="btn btn-primary" href="{% url 'announcement_list' %}">List Announcement</a>
         </div>
     </div>
 {% endblock content %}

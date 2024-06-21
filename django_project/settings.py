@@ -25,7 +25,8 @@ SECRET_KEY = "django-insecure-dp!m-aq)7gv8ny2fpeqy-d!agfiel+^9tddh75xz9c3nj9z7qa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+INTERNAL_IPS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -41,6 +42,10 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "webpack_loader",
+    "django_quill",
+    "django_tables2",
+    "django_filters",
+    "debug_toolbar",
     # local apps
     "core",
     "branch",
@@ -55,6 +60,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # 3rd party middleware
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "django_project.urls"
@@ -156,3 +163,26 @@ WEBPACK_LOADER = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# 3rd party apps settings
+# Quill settings
+QUILL_CONFIGS = {
+    "default": {
+        "theme": "snow",
+        "modules": {
+            "syntax": False,
+            "toolbar": [
+                [{"header": [1, 2, 3, False]}],
+                ["bold", "italic", "underline"],
+                [{"indent": "-1"}, {"indent": "+1"}],
+                [{"align": ""}, {"align": "center"}, {"align": "right"}],
+                ["link"],
+                [{"list": "ordered"}, {"list": "bullet"}, {"list": "check"}],
+                ["clean"],
+            ],
+        },
+    }
+}
+
+# Django-tables2 settings
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"

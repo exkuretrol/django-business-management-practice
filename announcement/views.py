@@ -1,9 +1,13 @@
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
+from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin
 
+from .filters import AnnouncementFilter
 from .forms import AnnouncementCreateForm
-from .models import AnnouncementAttachment
+from .models import Announcement, AnnouncementAttachment
+from .tables import AnnouncementTable
 
 
 class AnnouncementCreateView(CreateView):
@@ -26,3 +30,33 @@ class AnnouncementCreateView(CreateView):
 
     def get_success_url(self):
         return reverse("home")
+
+
+class AnnouncementListView(SingleTableMixin, FilterView):
+    table_class = AnnouncementTable
+    filterset_class = AnnouncementFilter
+    context_table_name = "announcement_table"
+    template_name = "announcement_list.html"
+
+
+class AnnouncementDetailView(DetailView):
+    model = Announcement
+    template_name = "announcement_detail.html"
+    context_object_name = "announcement"
+
+
+class AnnouncementUpdateView(UpdateView):
+    model = Announcement
+    form_class = AnnouncementCreateForm
+    template_name = "announcement_update.html"
+
+    def get_success_url(self):
+        return reverse("announcement_list")
+
+
+class AnnouncementDeleteView(DeleteView):
+    model = Announcement
+    template_name = "announcement_delete.html"
+
+    def get_success_url(self):
+        return reverse("announcement_list")

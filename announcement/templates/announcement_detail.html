@@ -1,0 +1,32 @@
+{% extends "_base.html" %}
+{% block content %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">發佈對象、發佈日期</h4>
+            <div class="row gx-4">
+                <div class="col-6">
+                    <h5 class="card-title">起始日期</h5>
+                    <p class="card-text mb-3">{{ announcement.effective_start_date }}</p>
+                </div>
+                <div class="col-6">
+                    <h5 class="card-title">結束日期</h5>
+                    <p class="card-text mb-3">{{ announcement.effective_end_date }}</p>
+                </div>
+                <div class="col-12">
+                    <h5 class="card-title">門市</h5>
+                    {% for branch in announcement.branchs.all %}
+                        <span class="badge bg-light text-dark">{{ branch.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h1>{{ announcement.title }}</h1>
+            <p>{{ announcement.content.html|safe }}</p>
+            <p>{{ announcement.created_at }}</p>
+            <a class="btn btn-primary" href="{% url 'announcement_list' %}">關閉公告</a>
+        </div>
+    </div>
+{% endblock content %}

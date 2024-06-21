@@ -1,6 +1,9 @@
-from typing import Any
+from typing import Any, Mapping
 
 from django import forms
+from django.core.files.base import File
+from django.db.models.base import Model
+from django.forms.utils import ErrorList
 
 from .models import Announcement
 
@@ -37,6 +40,10 @@ class AnnouncementCreateForm(forms.ModelForm):
             "effective_end_date",
             "branchs",
         ]
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields["content"].widget.attrs.update({"class": "editor"})
 
     def save(self, commit: bool = ...) -> Any:
         return super().save(commit)

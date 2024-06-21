@@ -1,0 +1,34 @@
+{% extends "_base.html" %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% comment %} TODO: implement date range picker & filter layout {% endcomment %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="filter_form" action="" method="get">
+                {{ filter.form|crispy }}
+                <input class="btn btn-primary" type="submit" value="搜尋">
+                <input class="btn btn-light" type="reset" value="清除">
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">{% render_table announcement_table %}</div>
+    </div>
+{% endblock content %}
+{% block head %}
+    {% include "includes/head/announcement_list.html" %}
+{% endblock head %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="">公告欄管理</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">總部查看公告欄</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

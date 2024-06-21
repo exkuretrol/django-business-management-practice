@@ -12,7 +12,8 @@ class AttachmentInline(admin.TabularInline):
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "get_content",
+        "content",
+        # "get_content",
         "effective_start_date",
         "effective_end_date",
         "author",

@@ -1,0 +1,14 @@
+fly.toml
+.git/
+*.sqlite3
+assets/
+media/
+node_modules/
+
+.prettierrc
+.gitignore
+*.code-workspace
+
+package.json
+package-lock.json
+Makefile

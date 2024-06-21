@@ -1,4 +1,4 @@
-{% comment %} {% load helper_tags %} {% endcomment %}
+{% load helper_tags %}
 {% with request.resolver_match.url_name as url_name %}
     <nav id="mainnav-container" class="mainnav">
         <div class="mainnav__inner">
@@ -24,17 +24,20 @@
                     <h6 class="mainnav__caption mt-0 fw-bold">Navigations</h6>
                     <ul class="mainnav__menu nav flex-column">
                         <li class="nav-item has-sub">
-                            <a href="#" class="mininav-toggle nav-link collapsed">
+                            <a href="{% url 'announcement_home' %}"
+                               class="mininav-toggle nav-link collapsed {% if url_name|is_announcement_category %}active{% endif %}">
                                 <i class="pli-pencil fs-5 me-2"></i>
                                 <span class="nav-label ms-1">公告欄管理</span>
                             </a>
                             <ul class="mininav-content nav collapse">
                                 <li data-popper-arrow class="arrow"></li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">公告欄設定</a>
+                                    <a href="{% url 'announcement_create' %}"
+                                       class="nav-link {% if url_name == "announcement_create" %}active{% endif %}">新增公告</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">總部查看公告欄</a>
+                                    <a href="{% url 'announcement_list' %}"
+                                       class="nav-link {% if url_name == "announcement_list" %}active{% endif %}">總部查看公告欄</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="" class="nav-link disabled">門市查看公告欄</a>

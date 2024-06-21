@@ -19,12 +19,12 @@ class AnnouncementFilter(filters.FilterSet):
     )
     effective_start_date = filters.DateFilter(
         lookup_expr="gte",
-        widget=DateInput(attrs={"type": "date", "placeholder": "請選擇起始日期"}),
+        # widget=DateInput(attrs={"type": "date", "placeholder": "請選擇起始日期"}),
         label=_("起始日期"),
     )
     effective_end_date = filters.DateFilter(
         lookup_expr="lte",
-        widget=DateInput(attrs={"type": "date", "placeholder": "請選擇結束日期"}),
+        # widget=DateInput(attrs={"type": "date", "placeholder": "請選擇結束日期"}),
         label=_("結束日期"),
     )
     status = filters.ChoiceFilter(

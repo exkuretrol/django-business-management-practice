@@ -5,7 +5,7 @@ from django.core.files.base import File
 from django.db.models.base import Model
 from django.forms.utils import ErrorList
 
-from .models import Announcement
+from .models import Announcement, StatusChoices
 
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -30,6 +30,7 @@ class MultipleFileField(forms.FileField):
 class AnnouncementCreateForm(forms.ModelForm):
     # TODO: let user change the file name
     attachments = MultipleFileField(required=False)
+    status = forms.ChoiceField(choices=StatusChoices.choices)
 
     class Meta:
         model = Announcement
@@ -39,6 +40,7 @@ class AnnouncementCreateForm(forms.ModelForm):
             "effective_start_date",
             "effective_end_date",
             "branchs",
+            "status",
         ]
 
     def __init__(self, *args, **kwargs) -> None:

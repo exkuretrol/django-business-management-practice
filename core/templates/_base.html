@@ -31,8 +31,8 @@
                                 </nav>
                             {% endblock breadcrumb %}
                             {% comment %} END : Breadcrumb {% endcomment %}
-                            {% if header_title %}<h1 class="page-title mb-0 mt-2">{{ header_title }}</h1>{% endif %}
-                            {% if header_description %}<p class="lead">{{ header_description }}</p>{% endif %}
+                            {% block header %}
+                            {% endblock header %}
                         </div>
                     </div>
                     <div class="content__boxed">
@@ -110,25 +110,29 @@
                                         </div>
                                         {% comment %} User menu link {% endcomment %}
                                         <div class="list-group list-group-borderless h-100 py-3">
-                                            <a href="" class="list-group-item list-group-item-action">
+                                            <a href="" class="list-group-item list-group-item-action disabled">
                                                 <i class="pli-male fs-5 me-2"></i>我的帳號
                                             </a>
-                                            <a href="" class="list-group-item list-group-item-action">
+                                            <a href="" class="list-group-item list-group-item-action disabled">
                                                 <i class="pli-gear fs-5 me-2"></i>設定
                                             </a>
-                                            <form action="{% url 'logout' %}"
+                                            <form id="logout-form"
+                                                  action="{% url 'logout' %}"
                                                   method="post"
-                                                  class="list-group-item list-group-item-action d-flex">
+                                                  class="list-group-borderless">
                                                 {% csrf_token %}
-                                                <i class="pli-unlock fs-5 me-2"></i>
-                                                <input type="submit" value="登出" class="nav-link">
+                                                <a class="list-group-item list-group-item-action"
+                                                   onclick="$('#logout-form input[type=submit]').trigger('click'); return false;">
+                                                    <i class="pli-unlock fs-5 me-2"></i> 登出
+                                                </a>
+                                                <input type="submit" value="登出" class="d-none">
                                             </form>
                                         </div>
                                     </div>
                                 {% else %}
                                     <a href="{% url 'login' %}">
                                         <button type="button" class="header__btn btn btn-icon btn-sm">
-                                            <i class="psi-male"></i>
+                                            <i class="pli-lock"></i>
                                         </button>
                                     </a>
                                 {% endif %}

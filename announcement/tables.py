@@ -25,12 +25,16 @@ class AnnouncementTable(tables.Table):
     effective_start_date = tables.Column(
         verbose_name=_("日期"), attrs={"td": {"class": "text-nowrap"}}
     )
-    status = tables.Column(attrs={"td": {"class": "text-nowrap"}}, orderable=False)
+    status = tables.Column(
+        attrs={"td": {"class": "text-nowrap"}, "th": {"class": "text-center"}},
+        orderable=False,
+    )
     attachments = tables.Column(orderable=False, attrs={"td": {"class": "text-nowrap"}})
     func = tables.TemplateColumn(
         verbose_name=_("操作"),
         template_name="django_tables2/func_column.html",
         orderable=False,
+        attrs={"td": {"class": "text-nowrap"}, "th": {"class": "text-center"}},
     )
 
     def render_content(self, value: FieldQuill):

@@ -3,7 +3,7 @@
 {% block content %}
     <div class="card">
         <div class="card-body">
-            <h2 class="card-title">Create Announcement</h2>
+            {% comment %} TODO: split it too multiple chunk later. {% endcomment %}
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form|crispy }}
@@ -16,6 +16,10 @@
     {% include "includes/head/announcement_create.html" %}
     {% include "includes/media/quill.html" %}
 {% endblock head %}
+{% block header %}
+    <h1 class="page-title mb-1 mt-2">新增公告</h1>
+    <p class="lead">新增一則公告。</p>
+{% endblock header %}
 {% block breadcrumb %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">

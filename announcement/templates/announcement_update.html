@@ -3,7 +3,6 @@
 {% block content %}
     <div class="card">
         <div class="card-body">
-            <h2 class="card-title">Update Announcement</h2>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form|crispy }}
@@ -16,3 +15,25 @@
     {% include "includes/head/announcement_create.html" %}
     {% include "includes/media/quill.html" %}
 {% endblock head %}
+{% block header %}
+    <h1 class="page-title mb-0 mt-2">更新公告</h1>
+    <p class="lead">更新一則已存在的公告。</p>
+{% endblock header %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'announcement_home' %}">公告欄管理</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'announcement_list' %}">總部查看公告欄</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ announcement.effective_start_date }} {{ announcement.title }}
+            </li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

@@ -1,8 +1,10 @@
 {% comment %} TODO: implement config later {% endcomment %}
 <div class="text-nowrap text-center">
-    {% comment %} <a href="#" class="btn btn-icon btn-sm btn-hover bg-body-tertiary"><i class="pli-gear fs-5"></i></a> {% endcomment %}
-    <a href="{% url 'announcement_update' record.pk %}"
-       class="btn btn-icon btn-sm btn-hover btn-primary"><i class="pli-pen-5 fs-5"></i></a>
-    <a href="{% url 'announcement_delete' record.pk %}"
-       class="btn btn-icon btn-sm btn-hover btn-danger"><i class="pli-trash fs-5"></i></a>
+   {% comment %} <a href="#" class="btn btn-icon btn-sm btn-hover bg-body-tertiary"><i class="pli-gear fs-5"></i></a> {% endcomment %}
+   <a href="{% url 'announcement_update' record.uuid %}"
+      class="btn btn-icon btn-sm btn-hover btn-primary"><i class="pli-pen-5 fs-5"></i></a>
+   <a href="{% url 'announcement_create_from_copy' record.uuid %}"
+      class="btn btn-icon btn-sm btn-hover btn-danger"><i class="pli-duplicate-layer fs-5"></i></a>
+   <a href="{% url 'announcement_delete' record.uuid %}"
+      class="btn btn-icon btn-sm btn-hover btn-danger"><i class="pli-trash fs-5"></i></a>
 </div>

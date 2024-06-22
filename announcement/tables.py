@@ -9,10 +9,9 @@ from .models import Announcement, StatusChoices
 
 class AnnouncementTable(tables.Table):
     check = CheckBoxColumn(
-        verbose_name=_("#"),
         empty_values=[],
         attrs={
-            "th__input": {"class": "form-check-input"},
+            "th__input": {"class": "form-check-input", "id": "check_all"},
             "td__input": {"class": "form-check-input"},
         },
     )
@@ -102,3 +101,6 @@ class AnnouncementTable(tables.Table):
             "func",
         )
         attrs = {"class": "table table-striped align-middle"}
+        row_attrs = {"data-id": lambda record: record.pk}
+        per_page = 4
+        order_by = ("-effective_start_date",)

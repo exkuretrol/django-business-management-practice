@@ -1,3 +1,7 @@
+from typing import Any
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms import BaseModelForm
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
@@ -10,7 +14,7 @@ from .models import Announcement, AnnouncementAttachment
 from .tables import AnnouncementTable
 
 
-class AnnouncementCreateView(CreateView):
+class AnnouncementCreateView(LoginRequiredMixin, CreateView):
     form_class = AnnouncementCreateForm
     template_name = "announcement_create.html"
 
@@ -29,10 +33,21 @@ class AnnouncementCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("home")
+        return reverse("announcement_list")
 
 
-class AnnouncementListView(SingleTableMixin, FilterView):
+class AnnouncementCreateFromCopyView(AnnouncementCreateView):
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        uuid = self.kwargs.get("uuid")
+        announcement = Announcement.objects.get(uuid=uuid)
+        context["form"] = AnnouncementCreateForm(
+            initial={"title": announcement.title, "content": announcement.content}
+        )
+        return context
+
+
+class AnnouncementListView(LoginRequiredMixin, SingleTableMixin, FilterView):
     table_class = AnnouncementTable
     filterset_class = AnnouncementFilter
     context_table_name = "announcement_table"

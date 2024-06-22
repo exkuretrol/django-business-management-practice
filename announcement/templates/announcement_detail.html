@@ -30,3 +30,24 @@
         </div>
     </div>
 {% endblock content %}
+{% block header %}
+    <h1 class="page-title mt-2">公告明細</h1>
+{% endblock header %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'announcement_home' %}">公告欄管理</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'announcement_list' %}">總部查看公告欄</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ announcement.effective_start_date }} {{ announcement.title }}
+            </li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

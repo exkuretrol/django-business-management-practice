@@ -4,11 +4,12 @@ fly.toml
 assets/
 media/
 node_modules/
+staticfiles/
 
 .prettierrc
 .gitignore
 *.code-workspace
+Makefile
 
 package.json
 package-lock.json
-Makefile

@@ -22,18 +22,16 @@ staticfiles
 # media files
 media
 
-# csv files
-*.csv
-
 # purchase files
-assets/js/nifty
-assets/js/nifty.js
-assets/icons
-assets/fonts
-assets/css/demo-purpose
-assets/scss/nifty-admin
-assets/scss/vendors
-assets/scss/styles.scss
+assets/src/js/nifty
+assets/src/js/nifty.js
+assets/src/icons
+assets/src/fonts
+assets/src/scss/nifty-admin
+assets/src/scss/vendors
+assets/src/scss/styles.scss
+
+# webpack bundles
 assets/webpack_bundles
 
 # webpack stats

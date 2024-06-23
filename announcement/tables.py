@@ -39,6 +39,7 @@ class AnnouncementTable(tables.Table):
     def render_title(self, value):
         if len(value) > 16:
             return value[:16] + "..."
+        return value
 
     def render_content(self, value: FieldQuill):
         content = value.plain

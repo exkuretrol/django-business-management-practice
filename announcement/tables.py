@@ -36,10 +36,14 @@ class AnnouncementTable(tables.Table):
         attrs={"td": {"class": "text-nowrap"}, "th": {"class": "text-center"}},
     )
 
+    def render_title(self, value):
+        if len(value) > 16:
+            return value[:16] + "..."
+
     def render_content(self, value: FieldQuill):
         content = value.plain
-        if len(content) > 50:
-            return content[:50] + "..."
+        if len(content) > 32:
+            return content[:32] + "..."
         return content
 
     def render_status(self, value):

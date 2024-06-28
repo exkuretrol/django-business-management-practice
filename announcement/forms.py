@@ -43,9 +43,5 @@ class AnnouncementCreateForm(forms.ModelForm):
             "status",
         ]
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.fields["content"].widget.attrs.update({"class": "editor"})
-
     def save(self, commit: bool = ...) -> Any:
         return super().save(commit)

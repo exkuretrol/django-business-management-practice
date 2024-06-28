@@ -20,7 +20,11 @@ node_modules
 staticfiles
 
 # media files
-media
+
+# ignore /media only
+/media
+
+
 
 # purchase files
 assets/src/js/nifty

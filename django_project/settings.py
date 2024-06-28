@@ -199,12 +199,8 @@ QUILL_CONFIGS = {
         "modules": {
             "syntax": False,
             "toolbar": [
-                [{"header": [1, 2, 3, False]}],
                 ["bold", "italic", "underline"],
-                [{"indent": "-1"}, {"indent": "+1"}],
-                [{"align": ""}, {"align": "center"}, {"align": "right"}],
                 ["link"],
-                [{"list": "ordered"}, {"list": "bullet"}, {"list": "check"}],
                 ["clean"],
             ],
         },

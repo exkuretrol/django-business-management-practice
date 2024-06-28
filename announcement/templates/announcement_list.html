@@ -6,9 +6,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <form id="filter_form" action="" method="get">
-                {{ filter.form|crispy }}
-                <input class="btn btn-primary" type="submit" value="搜尋">
-                <input class="btn btn-light" type="reset" value="清除">
+                {% crispy filter.form filter.form.helper %}
             </form>
         </div>
     </div>

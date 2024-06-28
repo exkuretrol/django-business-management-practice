@@ -1,4 +1,6 @@
 import django_filters as filters
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Column, Layout, Reset, Row, Submit
 from django import forms
 from django.forms import DateInput
 from django.utils.translation import gettext_lazy as _
@@ -41,3 +43,20 @@ class AnnouncementFilter(filters.FilterSet):
             "effective_end_date",
             "status",
         ]
+
+    def __init__(self, data=None, queryset=None, *, request=None, prefix=None):
+        super().__init__(data, queryset, request=request, prefix=prefix)
+        helper = FormHelper()
+        helper.layout = Layout(
+            "title",
+            "content",
+            "branches",
+            Row(
+                Column("effective_start_date", css_class="col-md-5"),
+                Column("effective_end_date", css_class="col-md-5"),
+                Column("status", css_class="col-md-2"),
+            ),
+            Submit("submit", "搜尋", css_class="btn-primary"),
+            Reset("reset", "清除", css_class="btn-light"),
+        )
+        self.form.helper = helper

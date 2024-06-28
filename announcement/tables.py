@@ -95,7 +95,7 @@ class AnnouncementTable(tables.Table):
             "attachments",
             # "branchs",
         )
-        empty_text = _("No announcement available")
+        empty_text = _("找不到公告")
         sequence = (
             "check",
             "effective_start_date",

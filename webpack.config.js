@@ -63,8 +63,7 @@ module.exports = (env, argv) => {
                 },
             ],
         },
-        devtool:
-            mode === "development" ? "cheap-module-eval-source-map" : false,
+        devtool: mode === "development" ? "eval-source-map" : false,
     };
     return config;
 };

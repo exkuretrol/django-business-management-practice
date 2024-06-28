@@ -1,7 +1,7 @@
 .PHONY: run
 
 run:
-	@python manage.py runserver
+	@python manage.py runserver_plus
 
 test:
 	@python manage.py test
@@ -10,6 +10,7 @@ makemigrations:
 	@python manage.py makemigrations core
 	@python manage.py makemigrations branch
 	@python manage.py makemigrations announcement
+	@python manage.py makemigrations checklist
 
 migrate:
 	@python manage.py migrate
@@ -18,7 +19,7 @@ collectstatic:
 	@python manage.py collectstatic
 
 shell:
-	@python manage.py shell
+	@python manage.py shell_plus
 
 clean:
 	@find . -type f -name ".DS_Store" -execdir rm -rf {} \;

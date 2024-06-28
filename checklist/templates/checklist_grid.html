@@ -1,0 +1,41 @@
+{% extends "_base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="card-title">
+                        <a class="h5 btn-link" href="{% url 'checklist_create' %}">新增待做事項</a>
+                    </div>
+                    <p class="text-body-secondary">新增一件待做事項。</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'checklist_create' %}" class="btn-link">顯示更多 ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="card-title">
+                        <a class="h5 btn-link" href="{% url 'checklist_list' %}">總部查看待做清單</a>
+                    </div>
+                    <p class="text-body-secondary">查看、編輯與刪除待做清單內容。</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'checklist_list' %}" class="btn-link">顯示更多 ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">待做清單管理</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

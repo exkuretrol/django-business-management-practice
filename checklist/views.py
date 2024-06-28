@@ -1,10 +1,14 @@
-from django import forms
-from django.http import HttpRequest, HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView
+from django.views.generic import FormView
+from django_filters.views import FilterView
+from django_tables2 import MultiTableMixin
 
+from .filters import ChecklistFilter
 from .forms import ChecklistCreateForm
-from .models import Checklist, ChecklistTemplate
+from .models import Checklist
+from .tables import ChecklistTable
 
 
 class ChecklistCreateView(FormView):
@@ -17,5 +21,9 @@ class ChecklistCreateView(FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        response = super().form_invalid(form)
-        return response
+        return super().form_invalid(form)
+
+
+class ChecklistListView(LoginRequiredMixin, FilterView):
+    filterset_class = ChecklistFilter
+    template_name = "checklist_list.html"

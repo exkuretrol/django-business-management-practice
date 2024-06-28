@@ -1,0 +1,24 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% load render_table from django_tables2 %}
+{% block content %}
+    <div class="card mb-4">
+        <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
+    </div>
+    {% regroup filter.qs by priority as checklist %}
+    {% for a, b in checklist %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3>priority {{ a }}</h3>
+                <ul>
+                    {% for c in b %}
+                        <li>
+                            <input type="checkbox" name="" id="" {% if c.status %}checked{% endif %}>
+                            {{ c.content }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock content %}

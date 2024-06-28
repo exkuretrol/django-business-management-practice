@@ -60,10 +60,12 @@ INSTALLED_APPS = [
     "django_tables2",
     "django_filters",
     "debug_toolbar",
+    "django_extensions",
     # local apps
     "core",
     "branch",
     "announcement",
+    "checklist",
 ]
 
 MIDDLEWARE = [

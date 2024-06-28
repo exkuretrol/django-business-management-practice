@@ -23,7 +23,6 @@
                     <div class="content__header content__boxed overlapping">
                         <div class="content__wrap">
                             {% comment %} Breadcrumb {% endcomment %}
-                            {% comment %} TODO: add order management summary page {% endcomment %}
                             {% block breadcrumb %}
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
@@ -112,10 +111,10 @@
                                         {% comment %} User menu link {% endcomment %}
                                         <div class="list-group list-group-borderless h-100 py-3">
                                             <a href="" class="list-group-item list-group-item-action disabled">
-                                                <i class="pli-male fs-5 me-2"></i>我的帳號
+                                                <i class="pli-male fs-5 me-2"></i> 我的帳號
                                             </a>
                                             <a href="" class="list-group-item list-group-item-action disabled">
-                                                <i class="pli-gear fs-5 me-2"></i>設定
+                                                <i class="pli-gear fs-5 me-2"></i> 設定
                                             </a>
                                             <form id="logout-form"
                                                   action="{% url 'logout' %}"

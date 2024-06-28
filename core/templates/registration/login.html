@@ -1,18 +1,23 @@
-{% extends "../_base.html" %}
+{% extends "../_base_front_page.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="card">
-        <div class="card-body">
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form | crispy }}
-                <input type="submit" value="登入" class="btn btn-primary">
-            </form>
+    <div class=" col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="card shadow-none mb-4">
+            <div class="card-body p-4">
+                <div class="text-center">
+                    <h3>系統登入</h3>
+                    <p>輸入您的帳號密碼</p>
+                </div>
+                {% crispy form form.helper %}
+            </div>
+        </div>
+        <div class="alert alert-danger mt-4">
+            <ol class="mb-0">
+                <li class="fs-6">
+                    【敬告】為落實個人資料以及公司機密保護，嚴禁翻拍、轉載與洩漏任何資料；接觸相關業務之同仁，應善盡保密責任，如違反，可依法處五年以下有期徒刑、拘役或併科新台幣一百萬以下罰金外，並將依公司獎懲辦法處理，情節嚴重時將予以解雇。若造成公司受有損害，必將依法請求相關損害賠償。
+                </li>
+                <li class="fs-6">未經公司同意使用他人帳號、提供帳號予他人使用、或使他人使用自己帳號進行操作或拷貝資料等，均違反公司規定，將依公司獎懲辦法懲處。</li>
+            </ol>
         </div>
     </div>
 {% endblock content %}
-{% block nav %}
-    <li class="nav-item">
-        <a href="{% url 'signup' %}" class="nav-link">+ 註冊 +</a>
-    </li>
-{% endblock nav %}

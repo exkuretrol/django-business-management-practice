@@ -1,0 +1,34 @@
+{% load static %}
+{% load render_bundle from webpack_loader %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" data-scheme="orange">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"
+              content="use django to connect to relational-database and make a todo app">
+        <meta name="keywords" content="django, postgresql">
+        <title>Django Project</title>
+        {% render_bundle "main" "js" %}
+        {% render_bundle "main" "css" %}
+        {% block head %}
+        {% endblock head %}
+    </head>
+    {% block body %}
+        <body class="out-quart">
+            {% comment %} Page container {% endcomment %}
+            <div id="root" class="root front-container">
+                {% comment %} Content {% endcomment %}
+                <section id="content" class="content">
+                    <div class="content__boxed w-100 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+                        <div class="content__wrap">
+                            {% block content %}
+                            {% endblock content %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+            {% comment %} END : Page container {% endcomment %}
+        </body>
+    {% endblock body %}
+</html>

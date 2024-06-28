@@ -24,6 +24,7 @@ class ChecklistAdmin(admin.ModelAdmin):
 class ChecklistTemplateAdmin(admin.ModelAdmin):
     list_display = [
         "content",
+        "order",
         "effective_start_date",
         "effective_end_date",
     ]

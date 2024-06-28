@@ -23,11 +23,12 @@ class Job(DailyJob):
                     branch=branch,
                     content=template.content,
                     priority=PriorityChoices.ROUTINE,
+                    order=template.order,
                     effective_start_date=template.effective_start_date,
                     effective_end_date=template.effective_end_date,
                 )
-                for template in checklist_for_all
                 for branch in Branch.objects.all()
+                for template in checklist_for_all
             ]
         )
 

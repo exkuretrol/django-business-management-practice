@@ -38,6 +38,7 @@ class ChecklistTemplate(models.Model):
         "branch.Branch", blank=True, verbose_name=_("門市")
     )
     content = models.TextField(verbose_name=_("內容"))
+    order = models.IntegerField(verbose_name=_("排序"), default=0)
     effective_start_date = models.DateField(
         verbose_name=_("生效起日"), default=timezone.now
     )

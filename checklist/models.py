@@ -19,7 +19,7 @@ class Checklist(models.Model):
         verbose_name=_("門市"),
         on_delete=models.CASCADE,
     )
-    content = models.TextField(verbose_name=_("內容"))
+    content = models.CharField(verbose_name=_("內容"), max_length=255)
     status = models.BooleanField(verbose_name=_("狀態"), default=False)
     order = models.IntegerField(verbose_name=_("排序"), default=0)
     priority = models.IntegerField(verbose_name=_("優先度"), default=0)

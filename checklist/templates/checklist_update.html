@@ -1,0 +1,7 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="card">
+        <div class="card-body">{% crispy form form.helper %}</div>
+    </div>
+{% endblock content %}

@@ -32,6 +32,9 @@ class Checklist(models.Model):
     created_at = models.DateTimeField(verbose_name=_("建立時間"), auto_now_add=True)
     last_modified = models.DateTimeField(verbose_name=_("最後更新時間"), auto_now=True)
 
+    def __str__(self) -> str:
+        return f"{self.branch} - {self.content}"
+
 
 class ChecklistTemplate(models.Model):
     branchs = models.ManyToManyField(

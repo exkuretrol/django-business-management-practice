@@ -1,13 +1,15 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse, reverse_lazy
+from django.core import serializers
+from django.db.models.query import QuerySet
+from django.urls import reverse_lazy
 from django.views.generic import DeleteView, FormView, UpdateView
 from django_filters.views import FilterView
 
-from branch.models import Branch
+from core.utils import my_reverse
 
-from .filters import ChecklistFilter
+from .filters import ChecklistBranchFilter, ChecklistFilter
 from .forms import ChecklistCreateForm, ChecklistUpdateForm
 from .models import Checklist
 
@@ -26,30 +28,13 @@ class ChecklistCreateView(FormView):
 
 
 class ChecklistListView(LoginRequiredMixin, FilterView):
-    filterset_class = ChecklistFilter
+    filterset_class = ChecklistBranchFilter
     template_name = "checklist_list.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["checkbox_checkable"] = False
         return context
-
-
-from django.utils.http import urlencode
-
-
-def my_reverse(viewname, kwargs=None, query_kwargs=None):
-    """
-    Custom reverse to add a query string after the url
-    Example usage:
-    url = my_reverse('my_test_url', kwargs={'pk': object.id}, query_kwargs={'next': reverse('home')})
-    """
-    url = reverse(viewname, kwargs=kwargs)
-
-    if query_kwargs:
-        return f"{url}?{urlencode(query_kwargs)}"
-
-    return url
 
 
 class ChecklistUpdateView(LoginRequiredMixin, UpdateView):
@@ -86,3 +71,13 @@ class ChecklistDeleteView(LoginRequiredMixin, DeleteView):
         obj = self.get_object()
         branch_pk = obj.branch.pk
         return my_reverse("checklist_list", query_kwargs={"branch": branch_pk})
+
+
+class ChecklistExportView(LoginRequiredMixin, FilterView):
+    filterset_class = ChecklistFilter
+    template_name = "checklist_export.html"
+
+
+class ChecklistExportCSVView(ChecklistExportView):
+    template_name = "checklist_export_csv.html"
+    content_type = "text/csv"

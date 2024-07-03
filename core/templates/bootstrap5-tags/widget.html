@@ -1,6 +1,6 @@
 {% include "django/forms/widgets/select.html" %}
 <script>
     (function () {
-        Tags.init("#{{ widget.attrs.id }}");
+        Tags.init("#{{ widget.attrs.id }}"{% if widget.tags %}, {{ widget.tags|safe }}{% endif %});
     })();
 </script>

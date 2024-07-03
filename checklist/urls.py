@@ -4,6 +4,8 @@ from django.views.generic import TemplateView
 from .views import (
     ChecklistCreateView,
     ChecklistDeleteView,
+    ChecklistExportCSVView,
+    ChecklistExportView,
     ChecklistListView,
     ChecklistUpdateView,
 )
@@ -25,5 +27,15 @@ urlpatterns = [
         "delete/<int:pk>/",
         ChecklistDeleteView.as_view(),
         name="checklist_delete",
+    ),
+    path(
+        "export/",
+        ChecklistExportView.as_view(),
+        name="checklist_export",
+    ),
+    path(
+        "export/csv/",
+        ChecklistExportCSVView.as_view(),
+        name="checklist_export_csv",
     ),
 ]

@@ -13,7 +13,14 @@ from core.widgets import Bootstrap5TagsSelectMultiple, LitePickerDateInput
 from .models import Checklist, PriorityChoices
 
 
-class ChecklistCreateForm(forms.Form):
+class CheckListBranchForm(forms.Form):
+    def clean(self):
+        if "0" in self.cleaned_data["branch"]:
+            if len(self.cleaned_data["branch"]) > 1:
+                self.add_error("branch", _("不能同時選擇所有門市與其他門市"))
+
+
+class ChecklistCreateForm(CheckListBranchForm):
     # manually add a choice for all branches
     all_branches = (0, _("所有門市"))
     branch_choices = list(Branch.objects.values_list("pk", "name"))
@@ -22,7 +29,7 @@ class ChecklistCreateForm(forms.Form):
     branch = forms.MultipleChoiceField(
         label=_("門市"),
         choices=branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(),
+        widget=Bootstrap5TagsSelectMultiple(config={"placeholder": "請選擇門市"}),
     )
     content = forms.CharField(widget=forms.TextInput, label=_("內容"))
     priority = forms.ChoiceField(
@@ -31,11 +38,6 @@ class ChecklistCreateForm(forms.Form):
         widget=forms.RadioSelect(),
     )
     effective_end_date = forms.DateField(label="有效日期", widget=LitePickerDateInput)
-
-    def clean_branch(self):
-        if "0" in self.cleaned_data["branch"]:
-            if len(self.cleaned_data["branch"]) > 1:
-                self.add_error("branch", _("不能同時選擇所有門市與其他門市"))
 
     def save(self, commit: bool = True) -> Any:
         branchs = self.cleaned_data["branch"]
@@ -58,7 +60,10 @@ class ChecklistCreateForm(forms.Form):
         super().__init__(*args, **kwargs)
         helper = FormHelper()
         helper.layout = Layout(
-            InlineRadios("priority", template="bootstrap5/radioselect_inline.html"),
+            InlineRadios(
+                "priority",
+                template="bootstrap5/radioselect_inline.html",
+            ),
             "branch",
             "effective_end_date",
             "content",

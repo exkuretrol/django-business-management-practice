@@ -22,7 +22,9 @@ class Checklist(models.Model):
     content = models.CharField(verbose_name=_("內容"), max_length=255)
     status = models.BooleanField(verbose_name=_("狀態"), default=False)
     order = models.IntegerField(verbose_name=_("排序"), default=0)
-    priority = models.IntegerField(verbose_name=_("優先度"), default=0)
+    priority = models.IntegerField(
+        verbose_name=_("優先度"), default=0, choices=PriorityChoices.choices
+    )
     effective_start_date = models.DateField(
         verbose_name=_("生效起日"), default=timezone.now
     )

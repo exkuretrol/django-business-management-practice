@@ -1,4 +1,5 @@
 from django import template
+from django.core import serializers
 
 register = template.Library()
 
@@ -17,3 +18,8 @@ def is_announcement_category(url_name):
 @register.filter
 def is_checklist_category(url_name):
     return url_name in []
+
+
+@register.filter
+def json(data):
+    return serializers.serialize("json", data)

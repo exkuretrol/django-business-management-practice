@@ -27,6 +27,19 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="card-title">
+                        <a class="h5 btn-link" href="{% url 'checklist_export' %}">門市待做清單下載</a>
+                    </div>
+                    <p class="text-body-secondary">匯出所選日期、門市或待做清單內容的表格。</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'checklist_export' %}" class="btn-link">顯示更多 ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
 {% block breadcrumb %}

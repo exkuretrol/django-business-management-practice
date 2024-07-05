@@ -1,0 +1,45 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% load index from helper_tags %}
+{% block content %}
+    <div class="card mb-4">
+        <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            {% if pivot_df %}
+                <div class="card-title h5">臨時作業未完成清單</div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {% for template_id, content in pivot_df.columns %}<th>{{ template_id }} - {{ content }}</th>{% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in pivot_df.data %}
+                                <tr>
+                                    <td>{{ pivot_df.index|index:forloop.counter0 }}</td>
+                                    {% for cell in row %}
+                                        <td>
+                                            {% comment %} if cell is true {% endcomment %}
+                                            {% if cell == 1 %}
+                                                <span class="badge rounded-pill bg-success">已完成</span>
+                                            {% elif cell == 0 %}
+                                                <span class="badge rounded-pill bg-danger">未完成</span>
+                                            {% else %}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="h5">無符合條件的待做清單</div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

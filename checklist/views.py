@@ -81,3 +81,33 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
 class ChecklistExportCSVView(ChecklistExportView):
     template_name = "checklist_export_csv.html"
     content_type = "text/csv"
+
+
+class ChecklistTempraryExportView(LoginRequiredMixin, FilterView):
+    filterset_class = ChecklistTemporaryFilter
+    template_name = "checklist_temporary_export.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        import pandas as pd
+
+        qs = self.filterset.qs
+        data = qs.values(
+            "branch__name", "template_id", "template_id__content", "status"
+        )
+        if len(data) == 0:
+            context["pivot_df"] = None
+            return context
+        df = pd.DataFrame(data)
+        pivot_df = df.pivot(
+            index="branch__name",
+            columns=["template_id", "template_id__content"],
+            values="status",
+        )
+        context["pivot_df"] = pivot_df.to_dict(orient="split")
+        return context
+
+
+class ChecklistTemporaryExportCSVView(ChecklistTempraryExportView):
+    template_name = "checklist_temporary_export_csv.html"
+    content_type = "text/csv"

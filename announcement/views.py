@@ -1,7 +1,6 @@
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import BaseModelForm
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView

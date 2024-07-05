@@ -14,7 +14,7 @@ from core.widgets import (
 )
 
 from .forms import CheckListBranchForm
-from .models import Checklist
+from .models import Checklist, PriorityChoices
 
 
 class ChecklistBranchFilter(filters.FilterSet):
@@ -42,14 +42,14 @@ class ChecklistBranchFilter(filters.FilterSet):
         if branch is None or branch == "":
             return queryset.none()
 
-        return queryset.filter(
+        queryset = queryset.filter(
             effective_start_date__lte=timezone.now(),
             effective_end_date__gte=timezone.now(),
         )
+        return queryset
 
 
 class ChecklistFilter(filters.FilterSet):
-
     all_branches = (0, _("所有門市"))
     branch_choices = list(Branch.objects.values_list("pk", "name"))
     branch_choices.insert(0, all_branches)
@@ -146,10 +146,20 @@ class ChecklistFilter(filters.FilterSet):
                     "匯出",
                     _("匯出"),
                     css_class="btn btn-outline-success",
-                    onclick="window.location = '/checklist/export/csv?' + (new URLSearchParams(window.location.search).toString())",
+                    onclick=f"window.location = '{self.request.path}csv?' + (new URLSearchParams(window.location.search).toString())",
                 ),
             ),
         )
 
         self.form.helper = helper
         print(self.form.fields["branch"].initial)
+
+
+class ChecklistTemporaryFilter(ChecklistFilter):
+    @property
+    def qs(self):
+        queryset = super().qs
+        branch = self.request.GET.get("branch", None)
+        if branch is None or branch == "":
+            return queryset.none()
+        return queryset.filter(template_id__priority=PriorityChoices.TEMPORARY)

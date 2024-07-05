@@ -5,6 +5,11 @@ register = template.Library()
 
 
 @register.filter
+def index(indexable, i):
+    return indexable[i]
+
+
+@register.filter
 def is_announcement_category(url_name):
     return url_name in [
         "announcement_home",

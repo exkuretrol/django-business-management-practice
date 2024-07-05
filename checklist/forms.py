@@ -10,62 +10,118 @@ from django.utils.translation import gettext_lazy as _
 from branch.models import Branch
 from core.widgets import Bootstrap5TagsSelectMultiple, LitePickerDateInput
 
-from .models import Checklist, PriorityChoices
+from .models import Checklist, ChecklistTemplate, PriorityChoices
 
 
-class CheckListBranchForm(forms.Form):
-    def clean(self):
-        if "0" in self.cleaned_data["branch"]:
-            if len(self.cleaned_data["branch"]) > 1:
-                self.add_error("branch", _("不能同時選擇所有門市與其他門市"))
+class ChecklistBranchCleanMixin:
+    def clean_branchs(self):
+        branchs = self.cleaned_data["branchs"]
+        if "0" in branchs:
+            if len(branchs) > 1:
+                self.add_error("branchs", _("不能同時選擇所有門市與其他門市"))
+            return Branch.objects.none()
+        branchs = Branch.objects.filter(pk__in=branchs)
+        return branchs
 
 
-class ChecklistCreateForm(CheckListBranchForm):
-    # manually add a choice for all branches
+class CheckListBranchForm(ChecklistBranchCleanMixin, forms.Form):
+    pass
+
+
+def get_all_branch_choices():
     all_branches = (0, _("所有門市"))
     branch_choices = list(Branch.objects.values_list("pk", "name"))
     branch_choices.insert(0, all_branches)
+    return branch_choices
 
-    branch = forms.MultipleChoiceField(
+
+class ChecklistTemplateCreateForm(ChecklistBranchCleanMixin, forms.ModelForm):
+    branchs = forms.MultipleChoiceField(
         label=_("門市"),
-        choices=branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(config={"placeholder": "請選擇門市"}),
+        choices=get_all_branch_choices,
+        widget=Bootstrap5TagsSelectMultiple(
+            config={"placeholder": "請選擇門市", "allowClear": True}
+        ),
     )
-    content = forms.CharField(widget=forms.TextInput, label=_("內容"))
-    priority = forms.ChoiceField(
-        label=_("種類"),
-        choices=PriorityChoices.choices,
-        widget=forms.RadioSelect(),
-    )
-    effective_end_date = forms.DateField(label="有效日期", widget=LitePickerDateInput)
 
-    def save(self, commit: bool = True) -> Any:
-        branchs = self.cleaned_data["branch"]
-        if branchs is None:
+    class Meta:
+        model = ChecklistTemplate
+        fields = [
+            "content",
+            "priority",
+            "effective_start_date",
+            "effective_end_date",
+            "branchs",
+        ]
+
+        widgets = {
+            "content": forms.TextInput,
+            "priority": forms.RadioSelect,
+        }
+
+        labels = {
+            "priority": "分類",
+            "effective_start_date": "生效開始日期",
+            "effective_end_date": "生效結束日期",
+        }
+
+    def save(self, user) -> Any:
+        obj = super().save(commit=False)
+        obj.last_modified_by = user
+        obj.save()
+        self.save_m2m()
+
+        branchs = self.cleaned_data["branchs"]
+        if not branchs.exists():
             branchs = Branch.objects.all()
+        if self.cleaned_data["priority"] == PriorityChoices.ROUTINE:
+            Checklist.objects.bulk_create(
+                [
+                    Checklist(
+                        template_id=self.instance,
+                        branch=branch,
+                        effective_start_date=timezone.localdate(),
+                        effective_end_date=timezone.localdate(),
+                    )
+                    for branch in branchs
+                ]
+            )
+        else:
+            Checklist.objects.bulk_create(
+                [
+                    Checklist(
+                        template_id=self.instance,
+                        branch=branch,
+                        effective_start_date=self.cleaned_data["effective_start_date"],
+                        effective_end_date=self.cleaned_data["effective_end_date"],
+                    )
+                    for branch in branchs
+                ]
+            )
 
-        Checklist.objects.bulk_create(
-            [
-                Checklist(
-                    branch=branch,
-                    content=self.cleaned_data["content"],
-                    priority=self.cleaned_data["priority"],
-                    effective_end_date=self.cleaned_data["effective_end_date"],
-                )
-                for branch in branchs
-            ],
-        )
+        return obj
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         helper = FormHelper()
         helper.layout = Layout(
-            InlineRadios(
-                "priority",
-                template="bootstrap5/radioselect_inline.html",
+            Row(
+                Column(
+                    "branchs",
+                    css_class="col-lg-8",
+                ),
+                Column(
+                    InlineRadios(
+                        "priority",
+                        template="bootstrap5/radioselect_inline.html",
+                    ),
+                    css_class="col-lg-4",
+                ),
             ),
-            "branch",
-            "effective_end_date",
+            Row(
+                Column("effective_start_date"),
+                Column("effective_end_date"),
+            ),
             "content",
             Div(
                 Submit("submit", _("新增")),
@@ -86,7 +142,7 @@ class ChecklistUpdateForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Checklist
+        model = ChecklistTemplate
         fields = ["content", "priority", "effective_start_date", "effective_end_date"]
         widgets = {
             "effective_end_date": LitePickerDateInput,

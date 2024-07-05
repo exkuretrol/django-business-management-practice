@@ -1,8 +1,11 @@
 {% include "django/forms/widgets/input.html" %}
 <script>
     (function () {
-        let picker = new Litepicker({
-            element: document.getElementById("{{ widget.attrs.id }}"),
-        });
+        let options = {{ widget.litepicker|safe }}
+        let element = {
+            element: document.getElementById("id_{{ widget.name }}"),
+        }
+        options = Object.assign({}, options, element);
+        let picker = new Litepicker(options);
     })();
 </script>

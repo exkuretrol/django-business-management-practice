@@ -4,7 +4,7 @@
     <div class="card mb-4">
         <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
     </div>
-    {% regroup filter.qs by branch as grouped_checklist %}
+    {% regroup sorted_data by branch as grouped_checklist %}
     {% for branch, list in grouped_checklist %}
         <div class="card mb-4">
             <div class="card-body">
@@ -22,15 +22,15 @@
                             {% for item in list %}
                                 <tr>
                                     <td>
-                                        {% if item.priority == 1 %}
+                                        {% if item.template_id.priority == 1 %}
                                             異常提醒
-                                        {% elif item.priority == 2 %}
+                                        {% elif item.template_id.priority == 2 %}
                                             臨時作業
-                                        {% elif item.priority == 3 %}
+                                        {% elif item.template_id.priority == 3 %}
                                             例行事項
                                         {% endif %}
                                     </td>
-                                    <td>{{ item.content }}</td>
+                                    <td>{{ item.template_id.content }}</td>
                                     <td>
                                         {% if item.status %}
                                             <span class="badge rounded-pill bg-success">已完成</span>
@@ -43,6 +43,12 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="card">
+            <div class="card-body">
+                <div class="h5">無符合條件的待做清單</div>
             </div>
         </div>
     {% endfor %}

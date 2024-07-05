@@ -9,18 +9,18 @@ from django_filters.views import FilterView
 
 from core.utils import my_reverse
 
-from .filters import ChecklistBranchFilter, ChecklistFilter
-from .forms import ChecklistCreateForm, ChecklistUpdateForm
+from .filters import ChecklistBranchFilter, ChecklistFilter, ChecklistTemporaryFilter
+from .forms import ChecklistTemplateCreateForm, ChecklistUpdateForm
 from .models import Checklist
 
 
 class ChecklistCreateView(FormView):
-    form_class = ChecklistCreateForm
+    form_class = ChecklistTemplateCreateForm
     template_name = "checklist_create.html"
     success_url = reverse_lazy("checklist_grid")
 
     def form_valid(self, form):
-        form.save(commit=True)
+        form.save(user=self.request.user)
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -76,6 +76,13 @@ class ChecklistDeleteView(LoginRequiredMixin, DeleteView):
 class ChecklistExportView(LoginRequiredMixin, FilterView):
     filterset_class = ChecklistFilter
     template_name = "checklist_export.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["sorted_data"] = self.filterset.qs.order_by(
+            "branch", "template_id__priority"
+        )
+        return context
 
 
 class ChecklistExportCSVView(ChecklistExportView):

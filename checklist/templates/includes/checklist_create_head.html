@@ -1,0 +1,29 @@
+<script>
+    $(() => {
+        let start_date_picker = new Litepicker({
+            element:document.getElementById("id_effective_start_date"),
+        })
+
+        let div_start_date_picker = $("#div_id_effective_start_date")
+        let div_end_date_picker = $("#div_id_effective_end_date")
+
+        let end_date_picker = new Litepicker({
+            element:document.getElementById("id_effective_end_date"),
+        })
+        
+
+        $("input[type=radio]").on("change", (e) => {
+            let priority = e.currentTarget.value;
+            if (priority === "1" || priority === "3")
+            {
+                end_date_picker.setDate("9999-12-31")
+                div_end_date_picker.hide()
+            }
+            else
+            {
+                end_date_picker.setDate(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+                div_end_date_picker.show()
+            }
+        })
+    });
+</script>

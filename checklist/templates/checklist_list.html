@@ -5,9 +5,8 @@
     <div class="card mb-4">
         <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
     </div>
-    {% regroup filter.qs|dictsort:"priority" by priority as checklist %}
+    {% regroup filter.qs|dictsort:"template_id.priority" by template_id.priority as checklist %}
     {% for priority, p_list in checklist %}
-        {% comment %} TODO: if a didn't exist, It will not render. need fix? {% endcomment %}
         <div class="card mb-4">
             <div class="card-body">
                 <h4 class="mb-3">
@@ -29,7 +28,9 @@
                                        {% if checkbox_item.status %}checked{% endif %}
                                        {% if not checkbox_checkable %}disabled{% endif %}>
                                 <label class="form-check-label opacity-100"
-                                       for="id-checklist-{{ checkbox_item.pk }}">{{ checkbox_item.content }}</label>
+                                       for="id-checklist-{{ checkbox_item.pk }}">
+                                    {{ checkbox_item.template_id.content }}
+                                </label>
                             </div>
                             <div class="d-flex align-content-center justify-content-center flex-wrap fs-6 gap-2">
                                 <a href="{% url 'checklist_update' checkbox_item.pk %}"

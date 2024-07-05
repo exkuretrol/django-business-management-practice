@@ -17,8 +17,14 @@ json_encorder = LazyEncoder().encode
 class LitePickerDateInput(forms.DateInput):
     template_name = "litepicker/widget.html"
 
-    def __init__(self, attrs=None, format=None):
+    def __init__(self, attrs=None, config=None, format=None):
         super().__init__(attrs=attrs, format=format)
+        self.config = config or {}
+
+    def get_context(self, *args, **kwargs):
+        context = super().get_context(*args, **kwargs)
+        context["widget"]["litepicker"] = json_encorder(self.config)
+        return context
 
 
 class Bootstrap5TagsSelectMultiple(forms.SelectMultiple):

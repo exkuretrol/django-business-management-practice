@@ -1,3 +1,3 @@
-Branch,Content,Status
-{% for row in filter.qs %}{{ row.branch }},{{ row.content }},{{ row.status }}
+工作日期,門市,作業分類,狀態,內容
+{% for row in sorted_data %}{{ row.created_at|date:"Y-m-d" }},{{ row.branch.name }},{% if row.template_id.priority == 1 %}異常提醒{% elif row.template_id.priority == 2 %}臨時作業{% elif row.template_id.priority == 3 %}例行作業{% endif %},{{ row.template_id.content }},{% if row.status %}完成{% else %}未完成{% endif %}
 {% endfor %}

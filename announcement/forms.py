@@ -5,6 +5,8 @@ from django.core.files.base import File
 from django.db.models.base import Model
 from django.forms.utils import ErrorList
 
+from core.widgets import Bootstrap5TagsSelectMultiple
+
 from .models import Announcement, StatusChoices
 
 
@@ -31,6 +33,9 @@ class AnnouncementCreateForm(forms.ModelForm):
     # TODO: let user change the file name
     attachments = MultipleFileField(required=False)
     status = forms.ChoiceField(choices=StatusChoices.choices)
+    # branchs = forms.ModelMultipleChoiceField(
+    #     queryset=None, widget=Bootstrap5TagsSelectMultiple()
+    # )
 
     class Meta:
         model = Announcement

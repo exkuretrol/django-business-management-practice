@@ -134,26 +134,54 @@ class ChecklistTemplateCreateForm(ChecklistBranchCleanMixin, forms.ModelForm):
         self.helper = helper
 
 
-class ChecklistUpdateForm(forms.ModelForm):
+class ChecklistTemplateUpdateForm(forms.ModelForm):
     priority = forms.ChoiceField(
         label=_("種類"),
         choices=PriorityChoices.choices,
         widget=forms.RadioSelect(attrs={"class": "form-check-inline"}),
     )
 
+    branchs = forms.MultipleChoiceField(
+        label=_("門市"),
+        choices=get_all_branch_choices,
+        widget=Bootstrap5TagsSelectMultiple(config={"placeholder": "請選擇門市"}),
+    )
+
     class Meta:
+        form = CheckListBranchForm
         model = ChecklistTemplate
-        fields = ["content", "priority", "effective_start_date", "effective_end_date"]
+        fields = [
+            "content",
+            "priority",
+            "effective_start_date",
+            "effective_end_date",
+        ]
         widgets = {
+            "content": forms.TextInput,
             "effective_end_date": LitePickerDateInput,
             "effective_start_date": LitePickerDateInput,
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        branchs = self.instance.branchs.all()
+        self.fields["branchs"].widget.config.update(
+            {
+                "selected": (
+                    ["0"] if branchs.count() == 0 else [str(b.pk) for b in branchs]
+                )
+            }
+        )
+
+        form_fields = self.fields
+        for field_name in form_fields.keys():
+            if field_name in ["effective_start_date", "effective_end_date", "branchs"]:
+                form_fields[field_name].disabled = True
+
         helper = FormHelper()
         helper.layout = Layout(
             InlineRadios("priority", template="bootstrap5/radioselect_inline.html"),
+            "branchs",
             Row(
                 Column("effective_start_date"),
                 Column("effective_end_date"),

@@ -7,7 +7,7 @@ urlpatterns = [
     path(
         "",
         TemplateView.as_view(template_name="checklist_grid.html"),
-        name="checklist_grid",
+        name="checklist_home",
     ),
     path(
         "create/",
@@ -16,13 +16,13 @@ urlpatterns = [
     ),
     path("list/", views.ChecklistListView.as_view(), name="checklist_list"),
     path(
-        "update/<uuid:pk>/",
-        views.ChecklistUpdateView.as_view(),
+        "update/<int:pk>/",
+        views.ChecklistTemplateUpdateView.as_view(),
         name="checklist_update",
     ),
     path(
-        "delete/<uuid:pk>/",
-        views.ChecklistDeleteView.as_view(),
+        "delete/<int:pk>/",
+        views.ChecklistTemplateDeleteView.as_view(),
         name="checklist_delete",
     ),
     path(

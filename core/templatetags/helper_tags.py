@@ -22,7 +22,13 @@ def is_announcement_category(url_name):
 
 @register.filter
 def is_checklist_category(url_name):
-    return url_name in []
+    return url_name in [
+        "checklist_home",
+        "checklist_create",
+        "checklist_list",
+        "checklist_export",
+        "checklist_temporary_export",
+    ]
 
 
 @register.filter

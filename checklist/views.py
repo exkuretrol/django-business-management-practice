@@ -1,8 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core import serializers
-from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, FormView, UpdateView
 from django_filters.views import FilterView
@@ -10,14 +8,14 @@ from django_filters.views import FilterView
 from core.utils import my_reverse
 
 from .filters import ChecklistBranchFilter, ChecklistFilter, ChecklistTemporaryFilter
-from .forms import ChecklistTemplateCreateForm, ChecklistUpdateForm
-from .models import Checklist
+from .forms import ChecklistTemplateCreateForm, ChecklistTemplateUpdateForm
+from .models import Checklist, ChecklistTemplate
 
 
 class ChecklistCreateView(FormView):
     form_class = ChecklistTemplateCreateForm
     template_name = "checklist_create.html"
-    success_url = reverse_lazy("checklist_grid")
+    success_url = reverse_lazy("checklist_home")
 
     def form_valid(self, form):
         form.save(user=self.request.user)
@@ -32,32 +30,48 @@ class ChecklistListView(LoginRequiredMixin, FilterView):
     template_name = "checklist_list.html"
 
     def get_context_data(self, *args, **kwargs):
+        # set current branch to session
+        self.request.session["current_branch"] = self.request.GET.get("branch", "")
         context = super().get_context_data(**kwargs)
         context["checkbox_checkable"] = False
         return context
 
 
-class ChecklistUpdateView(LoginRequiredMixin, UpdateView):
-    model = Checklist
-    template_name = "checklist_update.html"
-    form_class = ChecklistUpdateForm
+class ChecklistTemplateUpdateView(LoginRequiredMixin, UpdateView):
+    model = ChecklistTemplate
+    template_name = "checklist_template_update.html"
+    form_class = ChecklistTemplateUpdateForm
+    context_object_name = "checklist_template"
 
     def get_success_url(self) -> str:
-        obj = self.get_object()
-        branch_pk = obj.branch.pk
-        return my_reverse("checklist_list", query_kwargs={"branch": branch_pk})
+        current_branch = self.request.session.get("current_branch", "")
+        return my_reverse("checklist_list", query_kwargs={"branch": current_branch})
 
 
-class ChecklistDeleteView(LoginRequiredMixin, DeleteView):
-    model = Checklist
-    template_name = "checklist_delete.html"
+class ChecklistTemplateDeleteView(LoginRequiredMixin, DeleteView):
+    model = ChecklistTemplate
+    template_name = "checklist_template_delete.html"
+    context_object_name = "checklist_template"
 
     def get_context_data(self, *args, **kwargs):
+        branchs = self.object.branchs.all()
+        if branchs.count() == 0:
+            branchs_html = "<span class='badge rounded_pill bg-info'>所有門市</span>"
+        else:
+            branchs_html = [
+                f"<span class='badge rounded_pill bg-info'>{branch.name}</span>"
+                for branch in branchs
+            ]
+
         context = super().get_context_data(**kwargs)
         form = context["form"]
         helper = FormHelper()
         helper.layout = Layout(
             HTML(f"<p>確定要刪除 <strong>{self.object}</strong> 嗎？</p>"),
+            HTML(f"<p class='mb-0'>會影響到下列門市：</p>"),
+            HTML(
+                f"<div class='d-flex flex-row gap-2 mb-2'>{''.join(branchs_html)}</div>"
+            ),
             Div(
                 Submit("submit", "刪除"),
                 Button("cancel", "取消", onclick="history.back();"),
@@ -67,10 +81,12 @@ class ChecklistDeleteView(LoginRequiredMixin, DeleteView):
         form.helper = helper
         return context
 
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self) -> str:
-        obj = self.get_object()
-        branch_pk = obj.branch.pk
-        return my_reverse("checklist_list", query_kwargs={"branch": branch_pk})
+        current_branch = self.request.session.get("current_branch", "")
+        return my_reverse("checklist_list", query_kwargs={"branch": current_branch})
 
 
 class ChecklistExportView(LoginRequiredMixin, FilterView):

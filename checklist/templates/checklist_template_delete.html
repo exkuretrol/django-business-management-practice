@@ -5,12 +5,9 @@
         <div class="card-body">{% crispy form form.helper %}</div>
     </div>
 {% endblock content %}
-{% block head %}
-    {% include "includes/checklist_create_head.html" %}
-{% endblock head %}
 {% block header %}
-    <h1 class="page-title mb-1 mt-2">新增待做事項</h1>
-    <p class="lead">新增一件待做事項。</p>
+    <h1 class="page-title mb-1 mt-2">刪除待做項目</h1>
+    <p class="lead">刪除一則存在的待做項目。</p>
 {% endblock header %}
 {% block breadcrumb %}
     <nav aria-label="breadcrumb">
@@ -21,7 +18,10 @@
             <li class="breadcrumb-item">
                 <a href="{% url 'checklist_home' %}">待做清單管理</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">新增待做事項</li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'checklist_list' %}">總部查看待做清單</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ checklist_template }}</li>
         </ol>
     </nav>
 {% endblock breadcrumb %}

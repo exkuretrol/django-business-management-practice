@@ -43,3 +43,20 @@
         </div>
     </div>
 {% endblock content %}
+{% block header %}
+    <h1 class="page-title mb-1 mt-2">門市臨時作業清單下載</h1>
+    <p class="lead">匯出所選日期、門市或待做清單中臨時作業的表格。</p>
+{% endblock header %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'checklist_home' %}">待做清單管理</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">門市臨時作業清單下載</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

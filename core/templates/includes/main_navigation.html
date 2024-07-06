@@ -45,26 +45,31 @@
                             </ul>
                         </li>
                         <li class="nav-item has-sub">
-                            <a href="#" class="mininav-toggle nav-link collapsed">
+                            <a href="#"
+                               class="mininav-toggle nav-link collapsed {% if url_name|is_checklist_category %}active{% endif %}">
                                 <i class="pli-receipt-4 fs-5 me-2"></i>
-                                <span class="nav-label ms-1">Check List</span>
+                                <span class="nav-label ms-1">待做清單管理</span>
                             </a>
                             <ul class="mininav-content nav collapse">
                                 <li data-popper-arrow class="arrow"></li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">Check List 設定</a>
+                                    <a href="{% url 'checklist_create' %}"
+                                       class="nav-link {% if url_name == 'checklist_create' %}active{% endif %}">新增待做事項</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">總部查看 Check List</a>
+                                    <a href="{% url 'checklist_list' %}"
+                                       class="nav-link {% if url_name == 'checklist_list' %}active{% endif %}">總部查看待做清單</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">每日 Check List</a>
+                                    <a href="" class="nav-link disabled">門市查看待做清單</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">門市未完成清單下載</a>
+                                    <a href="{% url 'checklist_export' %}"
+                                       class="nav-link {% if url_name == 'checklist_export' %}active{% endif %}">門市待做清單下載</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">臨時作業完成度管理</a>
+                                    <a href="{% url 'checklist_temporary_export' %}"
+                                       class="nav-link {% if url_name == 'checklist_temporary_export' %}active{% endif %}">門市臨時作業清單下載</a>
                                 </li>
                             </ul>
                         </li>

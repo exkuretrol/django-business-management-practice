@@ -8,8 +8,7 @@ from .api import api
 from .views import NewLoginView
 
 urlpatterns = [
-    # path("", TemplateView.as_view(template_name="home.html"), name="home"),
-    path("", TemplateView.as_view(template_name="checklist_grid.html"), name="home"),
+    path("", TemplateView.as_view(template_name="home.html"), name="home"),
     path("api/", api.urls),
     path("accounts/login/", NewLoginView.as_view(), name="login"),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),

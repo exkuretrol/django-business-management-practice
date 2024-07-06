@@ -22,6 +22,7 @@ class ChecklistBranchFilter(filters.FilterSet):
         empty_label=_("請選擇一間門市"),
         queryset=Branch.objects.all(),
         widget=Bootstrap5TagsSelect,
+        required=True,
     )
 
     class Meta:
@@ -54,10 +55,14 @@ class ChecklistFilter(filters.FilterSet):
     branch_choices = list(Branch.objects.values_list("pk", "name"))
     branch_choices.insert(0, all_branches)
 
-    branch = filters.MultipleChoiceFilter(
+    branchs = filters.MultipleChoiceFilter(
+        label=_("門市"),
         choices=branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(config={"placeholder": "請選擇門市"}),
-        method="filter_branch",
+        widget=Bootstrap5TagsSelectMultiple(
+            config={"placeholder": "請選擇門市", "allowClear": True},
+        ),
+        required=True,
+        method="filter_branchs",
     )
 
     content = filters.CharFilter(
@@ -88,8 +93,8 @@ class ChecklistFilter(filters.FilterSet):
         method="filter_status",
     )
 
-    def filter_branch(self, queryset, name, value):
-        if len(value) == 1 and int(value[0]) == 0:
+    def filter_branchs(self, queryset, name, value):
+        if len(value) == 0:
             return queryset
 
         return queryset.filter(branch__in=value)
@@ -111,15 +116,15 @@ class ChecklistFilter(filters.FilterSet):
     @property
     def qs(self):
         queryset = super().qs
-        branch = self.request.GET.get("branch", None)
-        if branch is None or branch == "":
+        branchs = self.request.GET.get("branchs", None)
+        if branchs is None or branchs == "":
             return queryset.none()
         return queryset
 
     class Meta:
         model = Checklist
         form = CheckListBranchForm
-        fields = ["branch", "content", "status"]
+        fields = ["content", "status"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -128,7 +133,7 @@ class ChecklistFilter(filters.FilterSet):
         helper.layout = Layout(
             Row(
                 Column(
-                    "branch",
+                    "branchs",
                     css_class="col-8",
                 ),
                 Column(
@@ -152,14 +157,10 @@ class ChecklistFilter(filters.FilterSet):
         )
 
         self.form.helper = helper
-        print(self.form.fields["branch"].initial)
 
 
 class ChecklistTemporaryFilter(ChecklistFilter):
     @property
     def qs(self):
         queryset = super().qs
-        branch = self.request.GET.get("branch", None)
-        if branch is None or branch == "":
-            return queryset.none()
         return queryset.filter(template_id__priority=PriorityChoices.TEMPORARY)

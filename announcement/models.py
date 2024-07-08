@@ -33,7 +33,9 @@ class Announcement(models.Model):
         "branch.Branch", blank=True, verbose_name=_("門市")
     )
     status = models.PositiveSmallIntegerField(
-        verbose_name=_("狀態"), default=StatusChoices.DRAFT
+        verbose_name=_("狀態"),
+        default=StatusChoices.DRAFT,
+        choices=StatusChoices.choices,
     )
 
     def get_absolute_url(self):

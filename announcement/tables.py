@@ -47,19 +47,18 @@ class AnnouncementTable(tables.Table):
             return content[:32] + "..."
         return content
 
-    def render_status(self, value):
-        if value == StatusChoices.DRAFT:
+    def render_status(self, value, record):
+        status = record.status
+        if status == StatusChoices.DRAFT:
             return format_html(
-                '<span class="d-block badge bg-secondary">{}</span>', _("草稿")
+                '<span class="d-block badge bg-secondary">{}</span>', value
             )
-        elif value == StatusChoices.PUBLISHED:
+        elif status == StatusChoices.PUBLISHED:
             return format_html(
-                '<span class="d-block badge bg-success">{}</span>', _("已發佈")
+                '<span class="d-block badge bg-success">{}</span>', value
             )
-        elif value == StatusChoices.UNAVAILABLE:
-            return format_html(
-                '<span class="d-block badge bg-danger">{}</span>', _("已下架")
-            )
+        elif status == StatusChoices.UNAVAILABLE:
+            return format_html('<span class="d-block badge bg-danger">{}</span>', value)
 
     def render_attachments(self, value):
         attachments = value.all()

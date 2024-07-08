@@ -8,7 +8,7 @@ from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
 from .filters import AnnouncementFilter
-from .forms import AnnouncementCreateForm
+from .forms import AnnouncementCreateForm, AnnouncementUpdateForm
 from .models import Announcement, AnnouncementAttachment
 from .tables import AnnouncementTable
 
@@ -61,7 +61,7 @@ class AnnouncementDetailView(DetailView):
 
 class AnnouncementUpdateView(UpdateView):
     model = Announcement
-    form_class = AnnouncementCreateForm
+    form_class = AnnouncementUpdateForm
     template_name = "announcement_update.html"
 
     def get_success_url(self):

@@ -4,11 +4,7 @@
 {% block content %}
     {% comment %} TODO: implement date range picker & filter layout {% endcomment %}
     <div class="card mb-4">
-        <div class="card-body">
-            <form id="filter_form" action="" method="get">
-                {% crispy filter.form filter.form.helper %}
-            </form>
-        </div>
+        <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
     </div>
     <div class="card">
         <div class="card-header">

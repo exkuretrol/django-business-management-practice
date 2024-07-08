@@ -9,7 +9,7 @@ from core.utils import my_reverse
 
 from .filters import ChecklistBranchFilter, ChecklistFilter, ChecklistTemporaryFilter
 from .forms import ChecklistTemplateCreateForm, ChecklistTemplateUpdateForm
-from .models import Checklist, ChecklistTemplate
+from .models import ChecklistTemplate
 
 
 class ChecklistCreateView(FormView):

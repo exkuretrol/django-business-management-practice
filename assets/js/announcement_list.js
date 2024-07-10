@@ -48,7 +48,7 @@ $(() => {
                         announcements: ids,
                         action: action,
                     }),
-                    dataTyle: "json",
+                    dataType: "json",
                     contentType: "application/json",
                 }).done(() => {
                     location.reload();

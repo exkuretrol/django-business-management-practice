@@ -1,15 +1,18 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Q
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, FormView, UpdateView
+from django.utils import timezone
+from django.views.generic import DeleteView, FormView, ListView, UpdateView
 from django_filters.views import FilterView
 
+from branch.models import Branch
 from core.utils import my_reverse
 
 from .filters import ChecklistBranchFilter, ChecklistFilter, ChecklistTemporaryFilter
 from .forms import ChecklistTemplateCreateForm, ChecklistTemplateUpdateForm
-from .models import ChecklistTemplate
+from .models import Checklist, ChecklistTemplate
 
 
 class ChecklistCreateView(FormView):
@@ -25,15 +28,50 @@ class ChecklistCreateView(FormView):
         return super().form_invalid(form)
 
 
-class ChecklistListView(LoginRequiredMixin, FilterView):
+class ChecklistBranchsListView(LoginRequiredMixin, FilterView):
     filterset_class = ChecklistBranchFilter
-    template_name = "checklist_list.html"
+    template_name = "checklist_branchs_list.html"
 
     def get_context_data(self, *args, **kwargs):
         # set current branch to session
         self.request.session["current_branch"] = self.request.GET.get("branch", "")
         context = super().get_context_data(**kwargs)
         context["checkbox_checkable"] = False
+        return context
+
+
+class ChecklistListView(LoginRequiredMixin, ListView):
+    context_object_name = "checklist"
+    template_name = "checklist_list.html"
+    model = Checklist
+
+    def get_queryset(self):
+        today = timezone.now().date()
+        qs = super().get_queryset()
+        return qs.filter(
+            branch=Branch.objects.first(),
+            effective_start_date__lte=today,
+            effective_end_date__gte=today,
+        )
+
+    def get_progress(self):
+        qs = self.get_queryset()
+        return qs.aggregate(
+            count=Count("pk"),
+            finished=Count("status", filter=Q(status=True)),
+            todo=Count("status", filter=Q(status=False)),
+        )
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        progress = self.get_progress()
+        progress["finished_percent"] = (
+            progress["finished"] / progress["count"] * 100
+            if progress["count"] != 0
+            else 0
+        )
+        context["progress"] = progress
+        context["checkbox_checkable"] = True
         return context
 
 

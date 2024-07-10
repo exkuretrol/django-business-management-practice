@@ -1,0 +1,63 @@
+{% extends "_base.html" %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% comment %} TODO: implement date range picker & filter layout {% endcomment %}
+    <div class="card mb-4">
+        <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="btn-group dropdown">
+                <button type="button"
+                        class="btn btn-outline-light dropdown-toggle hstack gap-2"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    批次修改
+                    <span class="vr"></span>
+                </button>
+                <ul class="dropdown-menu" data-popper-placement="bottom-start">
+                    <li>
+                        <button class="dropdown-item" id="btn_archive">
+                            <i class="pli-box-close fs-5 me-2"></i>
+                            下架
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item" id="btn_publish">
+                            <i class="pli-upgrade fs-5 me-2"></i>
+                            發佈
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item" id="btn_unpublish">
+                            <i class="pli-paper fs-5 me-2"></i>
+                            轉為草稿
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">{% render_table announcement_table %}</div>
+    </div>
+{% endblock content %}
+{% block head %}
+    {% include "includes/head/announcement_list.html" %}
+{% endblock head %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'announcement_home' %}">公告欄管理</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">總部查看公告欄</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}
+{% block header %}
+    <h1 class="page-title mb-1 mt-2">總部查看公告欄</h1>
+    <p class="lead">查看、編輯與刪除公告欄內容。</p>
+{% endblock header %}

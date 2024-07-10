@@ -3,6 +3,7 @@ from typing import List, Literal, Optional
 from ninja import NinjaAPI, Schema
 
 from announcement.models import Announcement, StatusChoices
+from checklist.models import Checklist
 
 api = NinjaAPI(urls_namespace="api")
 
@@ -10,6 +11,11 @@ api = NinjaAPI(urls_namespace="api")
 class AnnouncementActionSchema(Schema):
     announcements: List[str]
     action: Literal["edit", "unpublish", "publish", "delete", "archive"]
+
+
+class ChecklistStatusSchema(Schema):
+    checklist: str
+    status: Literal["done", "todo"]
 
 
 class MessageSchema(Schema):
@@ -45,3 +51,20 @@ def announcement_action(request, data: AnnouncementActionSchema):
 
         return 200, {"message": "Updated successfully"}
     return 400, {"code": "action_invalid", "message": "Invalid action."}
+
+
+@api.post("/checklist/status", response={200: Success, 400: Error})
+def checklist_change_status(request, data: ChecklistStatusSchema):
+    # TODO: check branch is same as related user branch
+    if data.status == "done":
+        status = True
+    elif data.status == "todo":
+        status = False
+
+    try:
+        checklist = Checklist.objects.get(uuid=data.checklist)
+        checklist.status = status
+        checklist.save()
+    except Checklist.DoesNotExist:
+        return 400, {"code": "checklist_not_found", "message": "Checklist not found."}
+    return 200, {"message": "Updated successfully"}

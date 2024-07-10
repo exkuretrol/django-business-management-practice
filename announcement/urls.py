@@ -2,6 +2,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from .views import (
+    AnnouncementBranchsListView,
     AnnouncementCreateFromCopyView,
     AnnouncementCreateView,
     AnnouncementDeleteView,
@@ -21,6 +22,11 @@ urlpatterns = [
         "create/<uuid:uuid>/",
         AnnouncementCreateFromCopyView.as_view(),
         name="announcement_create_from_copy",
+    ),
+    path(
+        "branchslist/",
+        AnnouncementBranchsListView.as_view(),
+        name="announcement_branchs_list",
     ),
     path("list/", AnnouncementListView.as_view(), name="announcement_list"),
     path("<uuid:pk>/", AnnouncementDetailView.as_view(), name="announcement_detail"),

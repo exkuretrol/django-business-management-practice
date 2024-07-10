@@ -14,6 +14,11 @@ urlpatterns = [
         views.ChecklistCreateView.as_view(),
         name="checklist_create",
     ),
+    path(
+        "branchslist/",
+        views.ChecklistBranchsListView.as_view(),
+        name="checklist_branchs_list",
+    ),
     path("list/", views.ChecklistListView.as_view(), name="checklist_list"),
     path(
         "update/<int:pk>/",

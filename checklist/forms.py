@@ -158,7 +158,12 @@ class ChecklistTemplateUpdateForm(forms.ModelForm):
 
         form_fields = self.fields
         for field_name in form_fields.keys():
-            if field_name in ["effective_start_date", "effective_end_date", "branchs"]:
+            if field_name in [
+                "priority",
+                "effective_start_date",
+                "effective_end_date",
+                "branchs",
+            ]:
                 form_fields[field_name].disabled = True
 
         helper = FormHelper()

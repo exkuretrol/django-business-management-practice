@@ -18,9 +18,22 @@
             <div class="card h-100">
                 <div class="card-body d-flex flex-column">
                     <div class="card-title">
-                        <a class="h5 btn-link" href="{% url 'checklist_list' %}">總部查看待做清單</a>
+                        <a class="h5 btn-link" href="{% url 'checklist_branchs_list' %}">總部查看待做清單</a>
                     </div>
                     <p class="text-body-secondary">查看、編輯與刪除待做清單內容。</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'checklist_branchs_list' %}" class="btn-link">顯示更多 ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="card-title">
+                        <a class="h5 btn-link" href="{% url 'checklist_list' %}">門市查看待做清單</a>
+                    </div>
+                    <p class="text-body-secondary">查看與目前帳號關聯的待做清單內容。</p>
                     <div class="mt-auto">
                         <a href="{% url 'checklist_list' %}" class="btn-link">顯示更多 ></a>
                     </div>

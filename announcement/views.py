@@ -7,10 +7,10 @@ from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
-from .filters import AnnouncementFilter
+from .filters import AnnouncementBranchsFilter, AnnouncementFilter
 from .forms import AnnouncementCreateForm, AnnouncementUpdateForm
 from .models import Announcement, AnnouncementAttachment
-from .tables import AnnouncementTable
+from .tables import AnnouncementBranchsTable, AnnouncementTable
 
 
 class AnnouncementCreateView(LoginRequiredMixin, CreateView):
@@ -44,6 +44,13 @@ class AnnouncementCreateFromCopyView(AnnouncementCreateView):
             initial={"title": announcement.title, "content": announcement.content}
         )
         return context
+
+
+class AnnouncementBranchsListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    table_class = AnnouncementBranchsTable
+    filterset_class = AnnouncementBranchsFilter
+    context_table_name = "announcement_table"
+    template_name = "announcement_branchs_list.html"
 
 
 class AnnouncementListView(LoginRequiredMixin, SingleTableMixin, FilterView):

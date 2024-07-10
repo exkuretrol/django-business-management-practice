@@ -2,6 +2,7 @@ import django_filters as filters
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column, Layout, Reset, Row, Submit
 from django import forms
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from branch.forms import get_all_branch_choices
@@ -12,7 +13,7 @@ from .forms import AnnouncementFilterForm
 from .models import Announcement, StatusChoices
 
 
-class AnnouncementFilter(filters.FilterSet):
+class AnnouncementBranchsFilter(filters.FilterSet):
     title = filters.CharFilter(
         lookup_expr="icontains",
         label=_("標題"),
@@ -48,7 +49,7 @@ class AnnouncementFilter(filters.FilterSet):
 
     class Meta:
         model = Announcement
-        # form = AnnouncementFilterForm
+        form = AnnouncementFilterForm
         fields = [
             "title",
             "content",
@@ -77,3 +78,56 @@ class AnnouncementFilter(filters.FilterSet):
             Reset("reset", "清除", css_class="btn-light"),
         )
         form.helper = helper
+
+
+class AnnouncementFilter(filters.FilterSet):
+    title = filters.CharFilter(
+        lookup_expr="icontains",
+        label=_("標題"),
+        widget=forms.TextInput(attrs={"placeholder": "請輸入公告標題"}),
+    )
+
+    effective_start_date = filters.DateFilter(
+        lookup_expr="gte",
+        widget=LitePickerDateInput,
+        label=_("起始日期"),
+    )
+
+    effective_end_date = filters.DateFilter(
+        lookup_expr="lte",
+        widget=LitePickerDateInput,
+        label=_("結束日期"),
+    )
+
+    class Meta:
+        model = Announcement
+        fields = [
+            "title",
+            "effective_start_date",
+            "effective_end_date",
+        ]
+
+    def __init__(self, data=None, queryset=None, *, request=None, prefix=None):
+        super().__init__(data, queryset, request=request, prefix=prefix)
+        form = self.form
+        helper = FormHelper()
+        helper.form_method = "get"
+        helper.disable_csrf = True
+        helper.layout = Layout(
+            "title",
+            Row(
+                Column("effective_start_date", css_class="col-md-6"),
+                Column("effective_end_date", css_class="col-md-6"),
+            ),
+            Submit("submit", "搜尋", css_class="btn-primary"),
+            Reset("reset", "清除", css_class="btn-light"),
+        )
+        form.helper = helper
+
+    @property
+    def qs(self):
+        # TODO: replace with new branch filter
+        return super().qs.filter(
+            Q(status=StatusChoices.PUBLISHED)
+            & (Q(branchs__isnull=True) | Q(branchs__in=[Branch.objects.first()]))
+        )

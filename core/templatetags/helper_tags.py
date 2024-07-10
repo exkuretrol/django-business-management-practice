@@ -14,6 +14,7 @@ def is_announcement_category(url_name):
     return url_name in [
         "announcement_home",
         "announcement_create",
+        "announcement_branchs_list",
         "announcement_list",
         "announcement_detail",
         "announcement_update",
@@ -25,6 +26,7 @@ def is_checklist_category(url_name):
     return url_name in [
         "checklist_home",
         "checklist_create",
+        "checklist_branchs_list",
         "checklist_list",
         "checklist_export",
         "checklist_temporary_export",

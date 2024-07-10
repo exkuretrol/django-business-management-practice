@@ -36,11 +36,12 @@
                                        class="nav-link {% if url_name == "announcement_create" %}active{% endif %}">新增公告</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'announcement_list' %}"
-                                       class="nav-link {% if url_name == "announcement_list" %}active{% endif %}">總部查看公告欄</a>
+                                    <a href="{% url 'announcement_branchs_list' %}"
+                                       class="nav-link {% if url_name == "announcement_branchs_list" %}active{% endif %}">總部查看公告欄</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">門市查看公告欄</a>
+                                    <a href="{% url 'announcement_list' %}"
+                                       class="nav-link {% if url_name == "announcement_list" %}active{% endif %}">門市查看公告欄</a>
                                 </li>
                             </ul>
                         </li>
@@ -57,11 +58,12 @@
                                        class="nav-link {% if url_name == 'checklist_create' %}active{% endif %}">新增待做事項</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'checklist_list' %}"
-                                       class="nav-link {% if url_name == 'checklist_list' %}active{% endif %}">總部查看待做清單</a>
+                                    <a href="{% url 'checklist_branchs_list' %}"
+                                       class="nav-link {% if url_name == 'checklist_branchs_list' %}active{% endif %}">總部查看待做清單</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link disabled">門市查看待做清單</a>
+                                    <a href="{% url 'checklist_list' %}"
+                                       class="nav-link {% if url_name == 'checklist_list' %}active{% endif %}">門市查看待做清單</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{% url 'checklist_export' %}"

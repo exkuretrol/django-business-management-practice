@@ -8,13 +8,6 @@ from .models import Announcement, StatusChoices
 
 
 class AnnouncementTable(tables.Table):
-    check = CheckBoxColumn(
-        empty_values=[],
-        attrs={
-            "th__input": {"class": "form-check-input", "id": "check_all"},
-            "td__input": {"class": "form-check-input"},
-        },
-    )
     title = tables.LinkColumn(
         args=[tables.A("pk")],
         attrs={"td": {"class": "text-nowrap"}},
@@ -24,17 +17,7 @@ class AnnouncementTable(tables.Table):
     effective_start_date = tables.Column(
         verbose_name=_("日期"), attrs={"td": {"class": "text-nowrap"}}
     )
-    status = tables.Column(
-        attrs={"td": {"class": "text-nowrap"}, "th": {"class": "text-center"}},
-        orderable=False,
-    )
     attachments = tables.Column(orderable=False, attrs={"td": {"class": "text-nowrap"}})
-    func = tables.TemplateColumn(
-        verbose_name=_("操作"),
-        template_name="django_tables2/func_column.html",
-        orderable=False,
-        attrs={"td": {"class": "text-nowrap"}, "th": {"class": "text-center"}},
-    )
 
     def render_title(self, value):
         if len(value) > 16:
@@ -46,19 +29,6 @@ class AnnouncementTable(tables.Table):
         if len(content) > 32:
             return content[:32] + "..."
         return content
-
-    def render_status(self, value, record):
-        status = record.status
-        if status == StatusChoices.DRAFT:
-            return format_html(
-                '<span class="d-block badge bg-secondary">{}</span>', value
-            )
-        elif status == StatusChoices.PUBLISHED:
-            return format_html(
-                '<span class="d-block badge bg-success">{}</span>', value
-            )
-        elif status == StatusChoices.UNAVAILABLE:
-            return format_html('<span class="d-block badge bg-danger">{}</span>', value)
 
     def render_attachments(self, value):
         attachments = value.all()
@@ -81,7 +51,61 @@ class AnnouncementTable(tables.Table):
     def render_effective_start_date(self, value):
         return value.strftime("%Y-%m-%d")
 
-    # TODO: add multiple actions implementation at the footer of the table
+    class Meta:
+        model = Announcement
+        fields = (
+            "title",
+            "content",
+            "effective_start_date",
+            "attachments",
+        )
+        empty_text = _("找不到公告")
+        sequence = (
+            # "check",
+            "effective_start_date",
+            "title",
+            "content",
+            "attachments",
+            # "status",
+            # "func",
+        )
+        attrs = {"class": "table table-striped align-middle"}
+        row_attrs = {"data-id": lambda record: record.pk}
+        per_page = 4
+        order_by = ("-effective_start_date",)
+
+
+class AnnouncementBranchsTable(AnnouncementTable):
+    check = CheckBoxColumn(
+        empty_values=[],
+        attrs={
+            "th__input": {"class": "form-check-input", "id": "check_all"},
+            "td__input": {"class": "form-check-input"},
+        },
+    )
+    status = tables.Column(
+        attrs={"td": {"class": "text-nowrap"}, "th": {"class": "text-center"}},
+        orderable=False,
+    )
+    func = tables.TemplateColumn(
+        verbose_name=_("操作"),
+        template_name="django_tables2/func_column.html",
+        orderable=False,
+        attrs={"td": {"class": "text-nowrap"}, "th": {"class": "text-center"}},
+    )
+
+    def render_status(self, value, record):
+        status = record.status
+        if status == StatusChoices.DRAFT:
+            return format_html(
+                '<span class="d-block badge bg-secondary">{}</span>', value
+            )
+        elif status == StatusChoices.PUBLISHED:
+            return format_html(
+                '<span class="d-block badge bg-success">{}</span>', value
+            )
+        elif status == StatusChoices.UNAVAILABLE:
+            return format_html('<span class="d-block badge bg-danger">{}</span>', value)
 
     class Meta:
         model = Announcement
@@ -89,10 +113,7 @@ class AnnouncementTable(tables.Table):
             "title",
             "content",
             "effective_start_date",
-            # "effective_end_date",
-            # "author",
             "attachments",
-            # "branchs",
         )
         empty_text = _("找不到公告")
         sequence = (

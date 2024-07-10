@@ -19,16 +19,28 @@ console_command = '/code/manage.py shell'
   source = 'data'
   destination = '/data'
 
-[http_service]
+[[services]]
+  processes = ["app"]
   internal_port = 8000
-  force_https = true
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ['app']
+
+[[services.ports]]
+  handlers = ["http"]
+  port = 80
+  force_https = true
+
+[[services.ports]]
+  handlers = ["tls", "http"]
+  port = 443
+
+[processes]
+  cron = "supercronic /code/crontab" 
+  app = ""
 
 [[vm]]
-  memory = '256'
+  memory = '512'
   cpu_kind = 'shared'
   cpus = 1
 

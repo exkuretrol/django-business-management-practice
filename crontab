@@ -1,0 +1,1 @@
+@daily python manage.py runjobs daily

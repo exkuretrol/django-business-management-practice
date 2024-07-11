@@ -1,3 +1,3 @@
-{% load index from helper_tags %},{% for template_id, content in pivot_df.columns %}{% if not forloop.first %},{% endif %}{{ template_id }} - {{ content }}{% endfor %}
-{% for row in pivot_df.data %}{{ pivot_df.index|index:forloop.counter0 }}{% for cell in row %},{% if cell == 1 %}已完成{% elif cell == 0 %}未完成{% else %}{% endif %}{% endfor %}
+{% load index from helper_tags %}"","{% for template_id, content in pivot_df.columns %}{% if not forloop.first %}","{% endif %}{{ template_id }} - {{ content }}"{% endfor %}
+{% for row in pivot_df.data %}"{{ pivot_df.index|index:forloop.counter0 }}{% for cell in row %}","{% if cell == 1 %}已完成{% elif cell == 0 %}未完成{% else %}{% endif %}"{% endfor %}
 {% endfor %}

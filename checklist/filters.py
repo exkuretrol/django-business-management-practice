@@ -47,7 +47,7 @@ class ChecklistBranchFilter(filters.FilterSet):
             effective_start_date__lte=timezone.now(),
             effective_end_date__gte=timezone.now(),
         )
-        return queryset
+        return queryset.order_by("status")
 
 
 class ChecklistFilter(filters.FilterSet):

@@ -32,7 +32,22 @@ class MultipleFileField(forms.FileField):
         return result
 
 
-class AnnouncementCreateForm(CleanBranchsMixin, forms.ModelForm):
+class EffectiveDateCleanMixin:
+    def clean(self, *args, **kwargs):
+        cleaned_data = super().clean(*args, **kwargs)
+        start_date = cleaned_data.get("effective_start_date")
+        end_date = cleaned_data.get("effective_end_date")
+        if start_date and end_date and start_date > end_date:
+            self.add_error(
+                "effective_end_date",
+                _("結束日期不可早於開始日期"),
+            )
+        return cleaned_data
+
+
+class AnnouncementCreateForm(
+    EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
+):
     # TODO: let user change the file name
     attachments = MultipleFileField(label=_("附件"), required=False)
     branchs = forms.MultipleChoiceField(

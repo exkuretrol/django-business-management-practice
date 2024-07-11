@@ -7,6 +7,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from announcement.forms import EffectiveDateCleanMixin
 from branch.forms import CleanBranchsMixin, get_all_branch_choices
 from branch.models import Branch
 from core.widgets import Bootstrap5TagsSelectMultiple, LitePickerDateInput
@@ -18,7 +19,9 @@ class CheckListBranchForm(CleanBranchsMixin, forms.Form):
     pass
 
 
-class ChecklistTemplateCreateForm(CleanBranchsMixin, forms.ModelForm):
+class ChecklistTemplateCreateForm(
+    EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
+):
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
@@ -165,6 +168,7 @@ class ChecklistTemplateUpdateForm(forms.ModelForm):
                 "branchs",
             ]:
                 form_fields[field_name].disabled = True
+                form_fields[field_name].required = False
 
         helper = FormHelper()
         helper.layout = Layout(

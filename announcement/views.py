@@ -23,7 +23,8 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
         obj = form.save()
 
         for f in files:
-            # create and save the attachment object to the database, then manually add it to the announcement
+            # create and save the attachment object to the database,
+            # then manually add it to the announcement
             AnnouncementAttachment.objects.create(
                 name=f.name, attachment=f, create_datetime=timezone.now()
             )
@@ -32,7 +33,7 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("announcement_list")
+        return reverse("announcement_branchs_list")
 
 
 class AnnouncementCreateFromCopyView(AnnouncementCreateView):
@@ -72,7 +73,7 @@ class AnnouncementUpdateView(UpdateView):
     template_name = "announcement_update.html"
 
     def get_success_url(self):
-        return reverse("announcement_list")
+        return reverse("announcement_branchs_list")
 
 
 class AnnouncementDeleteView(DeleteView):
@@ -80,4 +81,4 @@ class AnnouncementDeleteView(DeleteView):
     template_name = "announcement_delete.html"
 
     def get_success_url(self):
-        return reverse("announcement_list")
+        return reverse("announcement_branchs_list")

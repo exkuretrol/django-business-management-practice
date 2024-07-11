@@ -3,6 +3,7 @@ from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import DeleteView, FormView, ListView, UpdateView
@@ -88,6 +89,10 @@ class ChecklistTemplateUpdateView(LoginRequiredMixin, UpdateView):
         return my_reverse(
             "checklist_branchs_list", query_kwargs={"branch": current_branch}
         )
+
+    def form_valid(self, form):
+        self.object = form.save(user=self.request.user)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ChecklistTemplateDeleteView(LoginRequiredMixin, DeleteView):

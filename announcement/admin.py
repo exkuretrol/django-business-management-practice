@@ -12,11 +12,12 @@ class AttachmentInline(admin.TabularInline):
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "content",
-        # "get_content",
+        "get_content",
         "effective_start_date",
         "effective_end_date",
         "author",
+        "last_modified",
+        "last_modified_by",
     )
 
     exclude = ("attachments",)
@@ -24,9 +25,10 @@ class AnnouncementAdmin(admin.ModelAdmin):
     inlines = [AttachmentInline]
 
     def get_content(self, obj):
-        if len(obj.content) > 50:
-            return obj.content[:50] + "..."
-        return obj.content
+        content = obj.content.plain
+        if len(content) > 50:
+            return content[:50] + "..."
+        return content
 
     get_content.short_description = "content"
 

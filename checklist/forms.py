@@ -133,6 +133,12 @@ class ChecklistTemplateUpdateForm(forms.ModelForm):
         widget=Bootstrap5TagsSelectMultiple(config={"placeholder": "請選擇門市"}),
     )
 
+    def save(self, user):
+        obj = super().save(commit=False)
+        obj.last_modified_by = user
+        obj.save()
+        return obj
+
     class Meta:
         form = CheckListBranchForm
         model = ChecklistTemplate

@@ -126,6 +126,12 @@ class AnnouncementUpdateForm(AnnouncementCreateForm):
             }
         )
 
+    def save(self, user):
+        instance = super().save(commit=False)
+        instance.last_modified_by = user
+        instance.save()
+        return instance
+
 
 class AnnouncementFilterForm(CleanBranchsMixin, forms.Form):
     pass

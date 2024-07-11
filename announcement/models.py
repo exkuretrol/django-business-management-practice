@@ -37,6 +37,16 @@ class Announcement(models.Model):
         default=StatusChoices.DRAFT,
         choices=StatusChoices.choices,
     )
+    created_at = models.DateTimeField(verbose_name=_("建立時間"), auto_now_add=True)
+    last_modified = models.DateTimeField(verbose_name=_("最後更新時間"), auto_now=True)
+    last_modified_by = models.ForeignKey(
+        related_name="last_modified_announcements",
+        verbose_name=_("最後更新者"),
+        to="core.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        editable=False,
+    )
 
     def get_absolute_url(self):
         return reverse("announcement_detail", kwargs={"pk": self.pk})

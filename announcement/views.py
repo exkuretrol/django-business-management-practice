@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
@@ -19,6 +20,7 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.last_modified_by = self.request.user
         files = form.cleaned_data.get("attachments")
         obj = form.save()
 
@@ -74,6 +76,10 @@ class AnnouncementUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse("announcement_branchs_list")
+
+    def form_valid(self, form: AnnouncementUpdateForm):
+        self.object = form.save(user=self.request.user)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class AnnouncementDeleteView(DeleteView):

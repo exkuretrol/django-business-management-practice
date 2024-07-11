@@ -64,6 +64,7 @@ def checklist_change_status(request, data: ChecklistStatusSchema):
     try:
         checklist = Checklist.objects.get(uuid=data.checklist)
         checklist.status = status
+        checklist.last_modified_by = request.user
         checklist.save()
     except Checklist.DoesNotExist:
         return 400, {"code": "checklist_not_found", "message": "Checklist not found."}

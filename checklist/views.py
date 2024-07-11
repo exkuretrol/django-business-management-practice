@@ -46,13 +46,14 @@ class ChecklistListView(LoginRequiredMixin, ListView):
     model = Checklist
 
     def get_queryset(self):
+        # TODO: regroup in get_queryset to avoid multiple query
         today = timezone.now().date()
         qs = super().get_queryset()
         return qs.filter(
             branch=Branch.objects.first(),
             effective_start_date__lte=today,
             effective_end_date__gte=today,
-        )
+        ).order_by("status")
 
     def get_progress(self):
         qs = self.get_queryset()
@@ -134,7 +135,7 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["sorted_data"] = self.filterset.qs.order_by(
-            "branch", "template_id__priority"
+            "branch", "-status", "template_id__priority", "order"
         )
         return context
 

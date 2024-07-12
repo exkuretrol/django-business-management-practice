@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    # admin docs
+    "django.contrib.admindocs",
     # using whitenoise to serve static files
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",

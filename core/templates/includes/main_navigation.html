@@ -24,7 +24,7 @@
                     <h6 class="mainnav__caption mt-0 fw-bold">Navigations</h6>
                     <ul class="mainnav__menu nav flex-column">
                         <li class="nav-item has-sub">
-                            <a href="{% url 'announcement_home' %}"
+                            <a href="{% url 'announcement:index' %}"
                                class="mininav-toggle nav-link collapsed {% if url_name|is_announcement_category %}active{% endif %}">
                                 <i class="pli-pencil fs-5 me-2"></i>
                                 <span class="nav-label ms-1">公告欄管理</span>
@@ -32,16 +32,16 @@
                             <ul class="mininav-content nav collapse">
                                 <li data-popper-arrow class="arrow"></li>
                                 <li class="nav-item">
-                                    <a href="{% url 'announcement_create' %}"
+                                    <a href="{% url 'announcement:create' %}"
                                        class="nav-link {% if url_name == "announcement_create" %}active{% endif %}">新增公告</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'announcement_branchs_list' %}"
-                                       class="nav-link {% if url_name == "announcement_branchs_list" %}active{% endif %}">總部查看公告欄</a>
+                                    <a href="{% url 'announcement:branchs_list' %}"
+                                       class="nav-link {% if url_name == "announcement:branchs_list" %}active{% endif %}">總部查看公告欄</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'announcement_list' %}"
-                                       class="nav-link {% if url_name == "announcement_list" %}active{% endif %}">門市查看公告欄</a>
+                                    <a href="{% url 'announcement:list' %}"
+                                       class="nav-link {% if url_name == "announcement:list" %}active{% endif %}">門市查看公告欄</a>
                                 </li>
                             </ul>
                         </li>
@@ -54,24 +54,24 @@
                             <ul class="mininav-content nav collapse">
                                 <li data-popper-arrow class="arrow"></li>
                                 <li class="nav-item">
-                                    <a href="{% url 'checklist_create' %}"
-                                       class="nav-link {% if url_name == 'checklist_create' %}active{% endif %}">新增待做事項</a>
+                                    <a href="{% url 'checklist:create' %}"
+                                       class="nav-link {% if url_name == 'checklist:create' %}active{% endif %}">新增待做事項</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'checklist_branchs_list' %}"
-                                       class="nav-link {% if url_name == 'checklist_branchs_list' %}active{% endif %}">總部查看待做清單</a>
+                                    <a href="{% url 'checklist:branchs_list' %}"
+                                       class="nav-link {% if url_name == 'checklist:branchs_list' %}active{% endif %}">總部查看待做清單</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'checklist_list' %}"
-                                       class="nav-link {% if url_name == 'checklist_list' %}active{% endif %}">門市查看待做清單</a>
+                                    <a href="{% url 'checklist:list' %}"
+                                       class="nav-link {% if url_name == 'checklist:list' %}active{% endif %}">門市查看待做清單</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'checklist_export' %}"
-                                       class="nav-link {% if url_name == 'checklist_export' %}active{% endif %}">門市待做清單下載</a>
+                                    <a href="{% url 'checklist:export' %}"
+                                       class="nav-link {% if url_name == 'checklist:export' %}active{% endif %}">門市待做清單下載</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'checklist_temporary_export' %}"
-                                       class="nav-link {% if url_name == 'checklist_temporary_export' %}active{% endif %}">門市臨時作業清單下載</a>
+                                    <a href="{% url 'checklist:temporary_export' %}"
+                                       class="nav-link {% if url_name == 'checklist:temporary_export' %}active{% endif %}">門市臨時作業清單下載</a>
                                 </li>
                             </ul>
                         </li>

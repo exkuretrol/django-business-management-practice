@@ -1,38 +1,41 @@
 from django import template
-from django.core import serializers
 
 register = template.Library()
 
 
 @register.filter
 def index(indexable, i):
+    """
+    取得可索引物件的第 i 個元素。
+    """
     return indexable[i]
 
 
 @register.filter
-def is_announcement_category(url_name):
+def is_announcement_category(url_name: str) -> bool:
+    """
+    過濾是否為公告的分類。
+    """
     return url_name in [
-        "announcement_home",
-        "announcement_create",
-        "announcement_branchs_list",
-        "announcement_list",
-        "announcement_detail",
-        "announcement_update",
+        "announcement:index",
+        "announcement:create",
+        "announcement:branchs_list",
+        "announcement:list",
+        "announcement:detail",
+        "announcement:update",
     ]
 
 
 @register.filter
-def is_checklist_category(url_name):
+def is_checklist_category(url_name: str):
+    """
+    過濾是否為待做清單的分類。
+    """
     return url_name in [
-        "checklist_home",
-        "checklist_create",
-        "checklist_branchs_list",
-        "checklist_list",
-        "checklist_export",
-        "checklist_temporary_export",
+        "checklist:index",
+        "checklist:create",
+        "checklist:branchs_list",
+        "checklist:list",
+        "checklist:export",
+        "checklist:temporary_export",
     ]
-
-
-@register.filter
-def json(data):
-    return serializers.serialize("json", data)

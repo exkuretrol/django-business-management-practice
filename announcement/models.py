@@ -14,6 +14,10 @@ class StatusChoices(models.IntegerChoices):
 
 
 class Announcement(models.Model):
+    """
+    公告。公告的附件儲存於 :model:`announcement.AnnouncementAttachment`。
+    """
+
     uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, verbose_name=_("UUID")
     )
@@ -49,13 +53,21 @@ class Announcement(models.Model):
     )
 
     def get_absolute_url(self):
-        return reverse("announcement_detail", kwargs={"pk": self.pk})
+        return reverse("announcement:detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.effective_start_date:%Y-%m-%d} - {self.title}"
 
+    class Meta:
+        verbose_name = _("公告")
+        verbose_name_plural = _("公告")
+
 
 class AnnouncementAttachment(models.Model):
+    """
+    公告的附件。相依於 :model:`announcement.Announcement`。
+    """
+
     name = models.CharField(max_length=100, verbose_name=_("名稱"))
     attachment = models.FileField(
         upload_to="attachments/%Y/%m/%d/", verbose_name=_("附件")
@@ -66,3 +78,7 @@ class AnnouncementAttachment(models.Model):
 
     def __str__(self):
         return f"{self.create_datetime:%Y-%m-%d} - {self.name}"
+
+    class Meta:
+        verbose_name = _("公告附件")
+        verbose_name_plural = _("公告附件")

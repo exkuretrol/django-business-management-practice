@@ -33,6 +33,7 @@ ipython = "^8.25.0"
 ipdb = "^0.13.13"
 werkzeug = "^3.0.3"
 pygraphviz = "^1.13"
+docutils = "^0.21.2"
 
 [build-system]
 requires = ["poetry-core"]

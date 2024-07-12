@@ -6,7 +6,13 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import DeleteView, FormView, ListView, UpdateView
+from django.views.generic import (
+    DeleteView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 from django_filters.views import FilterView
 
 from branch.models import Branch
@@ -17,10 +23,24 @@ from .forms import ChecklistTemplateCreateForm, ChecklistTemplateUpdateForm
 from .models import Checklist, ChecklistTemplate
 
 
+class ChecklistHomeView(TemplateView):
+    """
+    待做清單首頁。
+    """
+
+    template_name = "checklist_grid.html"
+
+
 class ChecklistCreateView(FormView):
+    """
+    待做清單模板新增頁面。
+
+    新增時，會將新增者設為最後更新者。
+    """
+
     form_class = ChecklistTemplateCreateForm
     template_name = "checklist_create.html"
-    success_url = reverse_lazy("checklist_home")
+    success_url = reverse_lazy("checklist:index")
 
     def form_valid(self, form):
         form.save(user=self.request.user)
@@ -31,6 +51,13 @@ class ChecklistCreateView(FormView):
 
 
 class ChecklistBranchsListView(LoginRequiredMixin, FilterView):
+    """
+    各個門市待做清單列表。
+
+    進入此頁面時，會將當前門市設定到 session 中。供 :view:`checklist.views.ChecklistTemplateUpdateView`
+    與 :view:`checklist.views.ChecklistTemplateDeleteView` 使用。會在更新或刪除後導回此頁面。保留當前門市。
+    """
+
     filterset_class = ChecklistBranchFilter
     template_name = "checklist_branchs_list.html"
 
@@ -43,6 +70,12 @@ class ChecklistBranchsListView(LoginRequiredMixin, FilterView):
 
 
 class ChecklistListView(LoginRequiredMixin, ListView):
+    """
+    待做清單列表。
+
+    顯示當前門市的待做清單。依照狀態排序，未完成的待做清單會排在前面。
+    """
+
     context_object_name = "checklist"
     template_name = "checklist_list.html"
     model = Checklist
@@ -79,6 +112,12 @@ class ChecklistListView(LoginRequiredMixin, ListView):
 
 
 class ChecklistTemplateUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    待做清單模板更新頁面。
+
+    更新時，會將更新者設為最後更新者。並導回 :view:`checklist.views.ChecklistBranchsListView`。
+    """
+
     model = ChecklistTemplate
     template_name = "checklist_template_update.html"
     form_class = ChecklistTemplateUpdateForm
@@ -87,7 +126,7 @@ class ChecklistTemplateUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self) -> str:
         current_branch = self.request.session.get("current_branch", "")
         return my_reverse(
-            "checklist_branchs_list", query_kwargs={"branch": current_branch}
+            "checklist:branchs_list", query_kwargs={"branch": current_branch}
         )
 
     def form_valid(self, form):
@@ -96,6 +135,12 @@ class ChecklistTemplateUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ChecklistTemplateDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    待做清單模板刪除頁面。
+
+    刪除時，會將刪除者設為最後更新者。並導回 :view:`checklist.views.ChecklistBranchsListView`。
+    """
+
     model = ChecklistTemplate
     template_name = "checklist_template_delete.html"
     context_object_name = "checklist_template"
@@ -134,11 +179,19 @@ class ChecklistTemplateDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self) -> str:
         current_branch = self.request.session.get("current_branch", "")
         return my_reverse(
-            "checklist_branchs_list", query_kwargs={"branch": current_branch}
+            "checklist:branchs_list", query_kwargs={"branch": current_branch}
         )
 
 
 class ChecklistExportView(LoginRequiredMixin, FilterView):
+    """
+    待做清單匯出預覽頁面。
+
+    透過篩選器來過濾待做清單。並依照分店、狀態、優先順序、排序來排序。
+
+    篩選後可以透過 :view:`checklist.views.ChecklistExportCSVView` 匯出成 CSV 檔案。
+    """
+
     filterset_class = ChecklistFilter
     template_name = "checklist_export.html"
 
@@ -151,11 +204,23 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
 
 
 class ChecklistExportCSVView(ChecklistExportView):
+    """
+    待做清單匯出 CSV 頁面。
+
+    在 :view:`checklist.views.ChecklistExportView` 的基礎上，將資料匯出成 CSV 檔案。
+    """
+
     template_name = "checklist_export_csv.html"
     content_type = "text/csv"
 
 
 class ChecklistTempraryExportView(LoginRequiredMixin, FilterView):
+    """
+    待做清單臨時事項匯出預覽頁面。
+
+    篩選後可以透過 :view:`checklist.views.ChecklistTemporaryExportCSVView` 匯出成 CSV 檔案。
+    """
+
     filterset_class = ChecklistTemporaryFilter
     template_name = "checklist_temporary_export.html"
 
@@ -181,5 +246,11 @@ class ChecklistTempraryExportView(LoginRequiredMixin, FilterView):
 
 
 class ChecklistTemporaryExportCSVView(ChecklistTempraryExportView):
+    """
+    待做清單臨時事項匯出 CSV 頁面。
+
+    在 :view:`checklist.views.ChecklistTempraryExportView` 的基礎上，將資料匯出成 CSV 檔案。
+    """
+
     template_name = "checklist_temporary_export_csv.html"
     content_type = "text/csv"

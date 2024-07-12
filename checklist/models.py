@@ -16,6 +16,10 @@ class PriorityChoices(models.IntegerChoices):
 
 
 class Checklist(models.Model):
+    """
+    待做清單。從 :model:`checklist.ChecklistTemplate` 複製內容，並指定門市。
+    """
+
     uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, verbose_name=_("UUID")
     )
@@ -50,8 +54,22 @@ class Checklist(models.Model):
     def __str__(self) -> str:
         return f"{self.branch} - {self.template_id.content}"
 
+    class Meta:
+        verbose_name = _("待做清單")
+        verbose_name_plural = _("待做清單")
+
 
 class ChecklistTemplate(models.Model):
+    """
+    待做清單模板。被用於定義待做清單的內容。
+
+    如果門市為空，則代表所有門市都適用。例如::
+
+        template = ChecklistTemplate.objects.create(content="每日清潔", priority=PriorityChoices.ROUTINE)
+
+    實際的門市待做清單是透過 :model:`checklist.Checklist` 來建立的。
+    """
+
     branchs = models.ManyToManyField(
         "branch.Branch", blank=True, verbose_name=_("門市")
     )
@@ -79,3 +97,7 @@ class ChecklistTemplate(models.Model):
 
     def __str__(self) -> str:
         return f"{self.pk} - ({PriorityChoices(self.priority).label}) {self.content}"
+
+    class Meta:
+        verbose_name = _("待做清單模板")
+        verbose_name_plural = _("待做清單模板")

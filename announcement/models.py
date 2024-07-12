@@ -51,6 +51,9 @@ class Announcement(models.Model):
     def get_absolute_url(self):
         return reverse("announcement_detail", kwargs={"pk": self.pk})
 
+    def __str__(self):
+        return f"{self.effective_start_date:%Y-%m-%d} - {self.title}"
+
 
 class AnnouncementAttachment(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("名稱"))

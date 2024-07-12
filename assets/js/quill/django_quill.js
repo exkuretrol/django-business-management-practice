@@ -6,7 +6,7 @@ class QuillWrapper {
         this.targetDiv = document.getElementById(targetDivId);
         if (!this.targetDiv)
             throw "Target div(" + targetDivId + ") id was invalid";
-        this.targetDiv.classList.add("ql-mh");
+        this.targetDiv.classList.add(...["ql-mh", "fs-6"]);
 
         this.targetInput = document.getElementById(targetInputId);
         if (!this.targetInput) throw "Target Input id was invalid";

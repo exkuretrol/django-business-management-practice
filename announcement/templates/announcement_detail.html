@@ -2,20 +2,22 @@
 {% block content %}
     <div class="card mb-4">
         <div class="card-body">
-            <h4 class="card-title">發佈對象、發佈日期</h4>
+            <h5 class="card-title">發佈對象、發佈日期</h5>
             <div class="row gx-4">
                 <div class="col-6">
-                    <h5 class="card-title">起始日期</h5>
+                    <h6 class="card-title">起始日期</h6>
                     <p class="card-text mb-3">{{ announcement.effective_start_date }}</p>
                 </div>
                 <div class="col-6">
-                    <h5 class="card-title">結束日期</h5>
+                    <h6 class="card-title">結束日期</h6>
                     <p class="card-text mb-3">{{ announcement.effective_end_date }}</p>
                 </div>
                 <div class="col-12">
-                    <h5 class="card-title">門市</h5>
+                    <h6 class="card-title">門市</h6>
                     {% for branch in announcement.branchs.all %}
                         <span class="badge bg-light text-dark">{{ branch.name }}</span>
+                    {% empty %}
+                        <span class="badge bg-light text-dark">所有門市</span>
                     {% endfor %}
                 </div>
             </div>
@@ -23,10 +25,33 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <h1>{{ announcement.title }}</h1>
-            <p>{{ announcement.content.html|safe }}</p>
-            <p>{{ announcement.created_at }}</p>
-            <a class="btn btn-primary" href="{% url 'announcement_list' %}">關閉公告</a>
+            <h5>公告欄內容</h5>
+            <div class="d-flex flex-column gap-3">
+                <div>
+                    <h6 class="card-title">公告名稱</h6>
+                    <p>{{ announcement.title }}</p>
+                </div>
+                <div>
+                    <h6 class="card-title">公告內容</h6>
+                    {{ announcement.content.html|safe }}
+                </div>
+                <div>
+                    {% with announcement.attachments.all as attachments %}
+                        {% if attachments %}
+                            <h6>附件</h6>
+                            {% for attachment in attachments %}
+                                <p>
+                                    <i class="pli-download-from-cloud fs-5"></i>
+                                    <a href="{{ attachment.attachment.url }}"
+                                       class="ms-2 btn-link text-decoration-underline"
+                                       target="_blank">{{ attachment.name }}</a>
+                                </p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+            <a class="btn btn-primary mt-3" href="{% url 'announcement_list' %}">關閉公告</a>
         </div>
     </div>
 {% endblock content %}

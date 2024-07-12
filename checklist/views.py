@@ -2,7 +2,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
-from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -31,7 +30,7 @@ class ChecklistHomeView(TemplateView):
     template_name = "checklist_grid.html"
 
 
-class ChecklistCreateView(FormView):
+class ChecklistCreateView(LoginRequiredMixin, FormView):
     """
     待做清單模板新增頁面。
 

@@ -112,7 +112,7 @@ class AnnouncementListView(LoginRequiredMixin, SingleTableMixin, FilterView):
     template_name = "announcement_list.html"
 
 
-class AnnouncementDetailView(DetailView):
+class AnnouncementDetailView(LoginRequiredMixin, DetailView):
     """
     公告詳細頁面。
 
@@ -124,7 +124,7 @@ class AnnouncementDetailView(DetailView):
     context_object_name = "announcement"
 
 
-class AnnouncementUpdateView(UpdateView):
+class AnnouncementUpdateView(LoginRequiredMixin, UpdateView):
     """
     公告更新頁面。
 
@@ -146,7 +146,7 @@ class AnnouncementUpdateView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class AnnouncementDeleteView(DeleteView):
+class AnnouncementDeleteView(LoginRequiredMixin, DeleteView):
     """
     公告刪除確認頁面。
 

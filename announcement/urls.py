@@ -25,12 +25,12 @@ urlpatterns = [
     path("list/", views.AnnouncementListView.as_view(), name="list"),
     path("<uuid:pk>/", views.AnnouncementDetailView.as_view(), name="detail"),
     path(
-        "<uuid:pk>/update/",
+        "update/<uuid:pk>/",
         views.AnnouncementUpdateView.as_view(),
         name="update",
     ),
     path(
-        "<uuid:pk>/delete/",
+        "delete/<uuid:pk>/",
         views.AnnouncementDeleteView.as_view(),
         name="delete",
     ),

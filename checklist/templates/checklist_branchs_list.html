@@ -33,9 +33,9 @@
                                 </label>
                             </div>
                             <div class="d-flex align-content-center justify-content-center flex-wrap fs-6 gap-2">
-                                <a href="{% url 'checklist_update' checkbox_item.template_id.pk %}"
+                                <a href="{% url 'checklist:update' checkbox_item.template_id.pk %}"
                                    class="btn btn-icon btn-sm btn-hover btn-primary"><i class="pli-pen-5 fs-5"></i></a>
-                                <a href="{% url 'checklist_delete' checkbox_item.template_id.pk %}"
+                                <a href="{% url 'checklist:delete' checkbox_item.template_id.pk %}"
                                    class="btn btn-icon btn-sm btn-hover btn-danger"><i class="pli-trash fs-5"></i></a>
                             </div>
                         </div>

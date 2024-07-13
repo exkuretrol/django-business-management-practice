@@ -25,12 +25,12 @@ urlpatterns = [
     path(
         "update/<int:pk>/",
         views.ChecklistTemplateUpdateView.as_view(),
-        name="checklist_update",
+        name="update",
     ),
     path(
         "delete/<int:pk>/",
         views.ChecklistTemplateDeleteView.as_view(),
-        name="checklist_delete",
+        name="delete",
     ),
     path(
         "export/",

@@ -5,7 +5,7 @@
     <div class="card mb-4">
         <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
     </div>
-    {% regroup filter.qs|dictsort:"template_id.priority" by template_id.priority as checklist %}
+    {% regroup filter.qs by priority as checklist %}
     {% for priority, p_list in checklist %}
         <div class="card mb-4">
             <div class="card-body">
@@ -28,14 +28,12 @@
                                        {% if checkbox_item.status %}checked{% endif %}
                                        {% if not checkbox_checkable %}disabled{% endif %}>
                                 <label class="form-check-label opacity-100"
-                                       for="id-checklist-{{ checkbox_item.pk }}">
-                                    {{ checkbox_item.template_id.content }}
-                                </label>
+                                       for="id-checklist-{{ checkbox_item.pk }}">{{ checkbox_item.content }}</label>
                             </div>
                             <div class="d-flex align-content-center justify-content-center flex-wrap fs-6 gap-2">
-                                <a href="{% url 'checklist:update' checkbox_item.template_id.pk %}"
+                                <a href="{% url 'checklist:update' checkbox_item.template_id_pk %}"
                                    class="btn btn-icon btn-sm btn-hover btn-primary"><i class="pli-pen-5 fs-5"></i></a>
-                                <a href="{% url 'checklist:delete' checkbox_item.template_id.pk %}"
+                                <a href="{% url 'checklist:delete' checkbox_item.template_id_pk %}"
                                    class="btn btn-icon btn-sm btn-hover btn-danger"><i class="pli-trash fs-5"></i></a>
                             </div>
                         </div>

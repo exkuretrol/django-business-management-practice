@@ -15,8 +15,8 @@
             </div>
         </div>
     </div>
-    {% regroup checklist|dictsort:"template_id.priority" by template_id.priority as checklist %}
-    {% for priority, p_list in checklist %}
+    {% regroup checklist by priority as grouped_checklist %}
+    {% for priority, p_list in grouped_checklist %}
         <div class="card mb-4">
             <div class="card-body">
                 <h4 class="mb-3">
@@ -29,17 +29,15 @@
                     {% endif %}
                 </h4>
                 <div class="d-flex flex-column gap-3">
-                    {% for checkbox_item in p_list %}
+                    {% for checkitem in p_list %}
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="checkbox"
-                                   id="id-checklist-{{ checkbox_item.pk }}"
-                                   {% if checkbox_item.status %}checked{% endif %}
+                                   id="id-checklist-{{ checkitem.pk }}"
+                                   {% if checkitem.status %}checked{% endif %}
                                    {% if not checkbox_checkable %}disabled{% endif %}>
                             <label class="form-check-label opacity-100"
-                                   for="id-checklist-{{ checkbox_item.pk }}">
-                                {{ checkbox_item.template_id.content }}
-                            </label>
+                                   for="id-checklist-{{ checkitem.pk }}">{{ checkitem.content }}</label>
                         </div>
                     {% endfor %}
                 </div>

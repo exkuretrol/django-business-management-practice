@@ -3,6 +3,7 @@ from crispy_forms.bootstrap import InlineRadios
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Button, Column, Div, Layout, Row, Submit
 from django import forms
+from django.db.models import F
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -43,11 +44,19 @@ class ChecklistBranchFilter(filters.FilterSet):
         if branch is None or branch == "":
             return queryset.none()
 
-        queryset = queryset.filter(
-            effective_start_date__lte=timezone.now(),
-            effective_end_date__gte=timezone.now(),
+        queryset = (
+            queryset.filter(
+                effective_start_date__lte=timezone.now(),
+                effective_end_date__gte=timezone.now(),
+            )
+            .annotate(
+                priority=F("template_id__priority"),
+                content=F("template_id__content"),
+                template_id_pk=F("template_id__pk"),
+            )
+            .order_by("priority", "status")
         )
-        return queryset.order_by("status")
+        return queryset
 
 
 class ChecklistFilter(filters.FilterSet):
@@ -103,10 +112,11 @@ class ChecklistFilter(filters.FilterSet):
         if value is None:
             return queryset
 
-        return queryset.filter(
+        queryset = queryset.filter(
             effective_start_date__lte=value,
             effective_end_date__gte=value,
         )
+        return queryset
 
     def filter_status(self, queryset, name, value):
         if value is None or value == "all":
@@ -115,10 +125,20 @@ class ChecklistFilter(filters.FilterSet):
 
     @property
     def qs(self):
-        queryset = super().qs
         branchs = self.request.GET.get("branchs", None)
         if branchs is None or branchs == "":
-            return queryset.none()
+            return Checklist.objects.none()
+
+        queryset = (
+            super()
+            .qs.annotate(
+                branch_no=F("branch"),
+                branch_name=F("branch__name"),
+                priority=F("template_id__priority"),
+                content=F("template_id__content"),
+            )
+            .order_by("branch_no", "priority")
+        )
         return queryset
 
     class Meta:

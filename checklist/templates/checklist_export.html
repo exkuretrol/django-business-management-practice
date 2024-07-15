@@ -1,15 +1,14 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    {% comment %} TODO: more effecicent export {% endcomment %}
     <div class="card mb-4">
         <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
     </div>
-    {% regroup sorted_data by branch as grouped_checklist %}
-    {% for branch, list in grouped_checklist %}
+    {% regroup filter.qs by branch_name as grouped_checklist %}
+    {% for branch, checklist in grouped_checklist %}
         <div class="card mb-4">
             <div class="card-body">
-                <div class="h4 card-title">{{ branch }}</div>
+                <h4 class="card-title">{{ branch }}</h4>
                 <div class="table-responsive">
                     <table class="table table-striped text-nowrap">
                         <thead>
@@ -20,20 +19,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in list %}
+                            {% for checkitem in checklist %}
                                 <tr>
                                     <td>
-                                        {% if item.template_id.priority == 1 %}
+                                        {% if checkitem.priority == 1 %}
                                             異常提醒
-                                        {% elif item.template_id.priority == 2 %}
+                                        {% elif checkitem.priority == 2 %}
                                             臨時作業
-                                        {% elif item.template_id.priority == 3 %}
+                                        {% elif checkitem.priority == 3 %}
                                             例行事項
                                         {% endif %}
                                     </td>
-                                    <td>{{ item.template_id.content }}</td>
+                                    <td>{{ checkitem.content }}</td>
                                     <td>
-                                        {% if item.status %}
+                                        {% if checkitem.status %}
                                             <span class="badge rounded-pill bg-success">已完成</span>
                                         {% else %}
                                             <span class="badge rounded-pill bg-danger">未完成</span>

@@ -1,7 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Q
+from django.db.models import Count, F, Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -79,15 +79,23 @@ class ChecklistListView(LoginRequiredMixin, ListView):
     template_name = "checklist_list.html"
     model = Checklist
 
+    branch = Branch.objects.first()
+
     def get_queryset(self):
         # TODO: regroup in get_queryset to avoid multiple query
         today = timezone.now().date()
         qs = super().get_queryset()
-        return qs.filter(
-            branch=Branch.objects.first(),
-            effective_start_date__lte=today,
-            effective_end_date__gte=today,
-        ).order_by("status")
+        return (
+            qs.filter(
+                branch=self.branch,
+                effective_start_date__lte=today,
+                effective_end_date__gte=today,
+            )
+            .annotate(
+                priority=F("template_id__priority"), content=F("template_id__content")
+            )
+            .order_by("priority", "status")
+        )
 
     def get_progress(self):
         qs = self.get_queryset()
@@ -196,9 +204,6 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["sorted_data"] = self.filterset.qs.order_by(
-            "branch", "-status", "template_id__priority", "order"
-        )
         return context
 
 

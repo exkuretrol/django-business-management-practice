@@ -1,7 +1,7 @@
 import "../scss/styles.scss";
 import "../scss/vendors/quill/quill.scss";
 import "../scss/vendors/litepicker/litepicker.scss";
-import Quill from "quill";
+import Quill from "./quill";
 
 import "./nifty";
 

@@ -20,7 +20,7 @@
             <div id="root" class="root front-container">
                 {% comment %} Content {% endcomment %}
                 <section id="content" class="content">
-                    <div class="content__boxed w-100 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+                    <div class="content__boxed {% if request.resolver_match.url_name != 'login' %}card{% endif %} w-100 min-vh-100 d-flex flex-column align-items-center justify-content-center">
                         <div class="content__wrap">
                             {% block content %}
                             {% endblock content %}

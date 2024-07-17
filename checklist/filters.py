@@ -187,7 +187,7 @@ class ChecklistFilter(filters.FilterSet):
             Div(
                 Submit("submit", _("篩選")),
                 Button(
-                    "匯出",
+                    "export",
                     _("匯出"),
                     css_class="btn btn-outline-success",
                     onclick=f"window.location = '{self.request.path}csv?' + (new URLSearchParams(window.location.search).toString())",

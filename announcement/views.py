@@ -14,9 +14,11 @@ from django.views.generic import (
 from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
+from core.models import File
+
 from .filters import AnnouncementBranchsFilter, AnnouncementFilter
 from .forms import AnnouncementCreateForm, AnnouncementUpdateForm
-from .models import Announcement, AnnouncementAttachment
+from .models import Announcement
 from .tables import AnnouncementBranchsTable, AnnouncementTable
 
 
@@ -44,13 +46,13 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
         files = form.cleaned_data.get("attachments")
         obj = form.save()
 
-        for f in files:
+        for file_ in files:
             # create and save the attachment object to the database,
             # then manually add it to the announcement
-            AnnouncementAttachment.objects.create(
-                name=f.name, attachment=f, create_datetime=timezone.now()
+            file_obj = File.objects.create(
+                name=file_.name, attachment=file_, create_datetime=timezone.now()
             )
-            obj.attachments.add(AnnouncementAttachment.objects.last())
+            obj.attachments.add(file_obj)
 
         return super().form_valid(form)
 

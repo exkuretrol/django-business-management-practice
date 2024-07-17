@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Announcement, AnnouncementAttachment
+from .models import Announcement
 
 
 class AttachmentInline(admin.TabularInline):
@@ -31,13 +31,3 @@ class AnnouncementAdmin(admin.ModelAdmin):
         return content
 
     get_content.short_description = "content"
-
-
-@admin.register(AnnouncementAttachment)
-class AnnouncementAttachmentAdmin(admin.ModelAdmin):
-    list_display = ("name", "attachment", "get_create_date")
-
-    def get_create_date(self, obj):
-        return obj.create_datetime.date()
-
-    get_create_date.short_description = "create_datetime"

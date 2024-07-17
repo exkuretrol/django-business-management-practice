@@ -1,4 +1,5 @@
 import uuid
+from os.path import splitext
 
 from django.db import models
 from django.urls import reverse
@@ -15,7 +16,7 @@ class StatusChoices(models.IntegerChoices):
 
 class Announcement(models.Model):
     """
-    公告。公告的附件儲存於 :model:`announcement.AnnouncementAttachment`。
+    公告。公告的附件儲存於 :model:`core.File`。
     """
 
     uuid = models.UUIDField(
@@ -31,7 +32,7 @@ class Announcement(models.Model):
         default=timezone.datetime.max, verbose_name=_("生效迄日")
     )
     attachments = models.ManyToManyField(
-        "AnnouncementAttachment", blank=True, verbose_name=_("附件")
+        "core.File", blank=True, verbose_name=_("附件")
     )
     branchs = models.ManyToManyField(
         "branch.Branch", blank=True, verbose_name=_("門市")
@@ -61,24 +62,3 @@ class Announcement(models.Model):
     class Meta:
         verbose_name = _("公告")
         verbose_name_plural = _("公告")
-
-
-class AnnouncementAttachment(models.Model):
-    """
-    公告的附件。相依於 :model:`announcement.Announcement`。
-    """
-
-    name = models.CharField(max_length=100, verbose_name=_("名稱"))
-    attachment = models.FileField(
-        upload_to="attachments/%Y/%m/%d/", verbose_name=_("附件")
-    )
-    create_datetime = models.DateTimeField(
-        default=timezone.now, verbose_name=_("創建時間")
-    )
-
-    def __str__(self):
-        return f"{self.create_datetime:%Y-%m-%d} - {self.name}"
-
-    class Meta:
-        verbose_name = _("公告附件")
-        verbose_name_plural = _("公告附件")

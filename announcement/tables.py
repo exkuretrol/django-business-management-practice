@@ -39,14 +39,13 @@ class AnnouncementTable(tables.Table):
         for attachment in attachments:
             attachment_buttons.append(
                 f"""
-                <a href="%s" class="btn btn-warning rounded-pill" target="_blank">
+                <a href="{attachment.file_path.url}" class="btn btn-warning rounded-pill" target="_blank">
                     <i class="pli-download-from-cloud"></i>
-                    %s
+                    {attachment.name}
                 </a>
                 """
-                % (attachment.attachment.url, attachment.name)
             )
-        return format_html(" ".join(attachment_buttons))
+        return format_html("\n".join(attachment_buttons))
 
     def render_effective_start_date(self, value):
         return value.strftime("%Y-%m-%d")

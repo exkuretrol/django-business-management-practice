@@ -38,7 +38,7 @@ ALLOWED_HOSTS = [
     f"{APP_NAME}.fly.dev",
 ]
 INTERNAL_IPS = ["localhost", "127.0.0.1"]
-CSRF_TRUSTED_ORIGINS = [f"https://{APP_NAME}.fly.dev"]
+CSRF_TRUSTED_ORIGINS = [f"https://{APP_NAME}.fly.dev", "http://localhost"]
 
 
 # Application definition

@@ -4,47 +4,48 @@
     <div class="card mb-4">
         <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
     </div>
-    {% regroup filter.qs by branch_name as grouped_checklist %}
-    {% for branch, checklist in grouped_checklist %}
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title">{{ branch }}</h4>
-                <div class="table-responsive">
-                    <table class="table table-striped text-nowrap">
-                        <thead>
-                            <tr>
-                                <th class="w-25">種類</th>
-                                <th class="w-auto">項目</th>
-                                <th class="w-25">狀態</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for checkitem in checklist %}
+    {% for group in object_list %}
+        {% for branch, checklist in group.items %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">{{ branch }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped text-nowrap">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        {% if checkitem.priority == 1 %}
-                                            異常提醒
-                                        {% elif checkitem.priority == 2 %}
-                                            臨時作業
-                                        {% elif checkitem.priority == 3 %}
-                                            例行事項
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ checkitem.content }}</td>
-                                    <td>
-                                        {% if checkitem.status %}
-                                            <span class="badge rounded-pill bg-success">已完成</span>
-                                        {% else %}
-                                            <span class="badge rounded-pill bg-danger">未完成</span>
-                                        {% endif %}
-                                    </td>
+                                    <th class="w-25">種類</th>
+                                    <th class="w-auto">項目</th>
+                                    <th class="w-25">狀態</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for checkitem in checklist %}
+                                    <tr>
+                                        <td>
+                                            {% if checkitem.priority == 1 %}
+                                                異常提醒
+                                            {% elif checkitem.priority == 2 %}
+                                                臨時作業
+                                            {% elif checkitem.priority == 3 %}
+                                                例行事項
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ checkitem.content }}</td>
+                                        <td>
+                                            {% if checkitem.status %}
+                                                <span class="badge rounded-pill bg-success">已完成</span>
+                                            {% else %}
+                                                <span class="badge rounded-pill bg-danger">未完成</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endfor %}
     {% empty %}
         <div class="card">
             <div class="card-body">
@@ -52,6 +53,11 @@
             </div>
         </div>
     {% endfor %}
+    {% if page_obj and paginator.num_pages > 1 %}
+        <div class="card">
+            <div class="card-body">{% include "includes/paginator.html" %}</div>
+        </div>
+    {% endif %}
 {% endblock content %}
 {% block header %}
     <h1 class="page-title mb-1 mt-2">門市待做清單下載</h1>

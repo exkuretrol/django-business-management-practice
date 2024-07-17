@@ -132,15 +132,21 @@ class ChecklistFilter(filters.FilterSet):
 
         queryset = (
             super()
-            .qs.annotate(
+            .qs.values(
                 branch_no=F("branch"),
                 branch_name=F("branch__name"),
                 priority=F("template_id__priority"),
                 content=F("template_id__content"),
+                last_modified_date=F("last_modified"),
             )
             .order_by("branch_no", "priority")
         )
-        return queryset
+        from itertools import groupby
+        from operator import itemgetter
+
+        new_qs = groupby(queryset, key=itemgetter("branch_name"))
+
+        return [{branch_name: list(branch_qs)} for branch_name, branch_qs in new_qs]
 
     class Meta:
         model = Checklist

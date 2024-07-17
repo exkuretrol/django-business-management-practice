@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, F, Q
+from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -201,9 +202,11 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
 
     filterset_class = ChecklistFilter
     template_name = "checklist_export.html"
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # raise
         return context
 
 

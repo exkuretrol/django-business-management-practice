@@ -75,6 +75,14 @@ class ChecklistFilter(filters.FilterSet):
         method="filter_branchs",
     )
 
+    priority = filters.ChoiceFilter(
+        label=_("類別"),
+        choices=PriorityChoices,
+        widget=Bootstrap5TagsSelect(config={"placeholder": "請選擇類別"}),
+        required=False,
+        method="filter_priority",
+    )
+
     content = filters.CharFilter(
         field_name="content",
         label=_("內容"),
@@ -118,6 +126,9 @@ class ChecklistFilter(filters.FilterSet):
             effective_end_date__gte=value,
         )
         return queryset
+
+    def filter_priority(self, queryset, name, value):
+        return queryset.filter(template_id__priority=value)
 
     def filter_status(self, queryset, name, value):
         if value is None or value == "all":
@@ -170,6 +181,7 @@ class ChecklistFilter(filters.FilterSet):
                     css_class="col-4",
                 ),
             ),
+            "priority",
             "content",
             "date",
             Div(
@@ -187,6 +199,8 @@ class ChecklistFilter(filters.FilterSet):
 
 
 class ChecklistTemporaryFilter(ChecklistFilter):
+    priority = None
+
     @property
     def qs(self):
         queryset = super().qs

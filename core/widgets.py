@@ -43,5 +43,11 @@ class Bootstrap5TagsSelectMultiple(forms.SelectMultiple):
 class Bootstrap5TagsSelect(forms.Select):
     template_name = "bootstrap5-tags/widget.html"
 
-    def __init__(self, attrs=None):
+    def __init__(self, attrs=None, config=None):
         super().__init__(attrs=attrs)
+        self.config = config or {}
+
+    def get_context(self, *args, **kwargs):
+        context = super().get_context(*args, **kwargs)
+        context["widget"]["tags"] = json_encorder(self.config)
+        return context

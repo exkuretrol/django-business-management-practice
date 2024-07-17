@@ -15,6 +15,11 @@ class PriorityChoices(models.IntegerChoices):
     ROUTINE = 3, _("例行")
 
 
+class StatusChoices(models.IntegerChoices):
+    DONE = 1, _("已完成")
+    TODO = 0, _("未完成")
+
+
 class Checklist(models.Model):
     """
     待做清單。從 :model:`checklist.ChecklistTemplate` 複製內容，並指定門市。
@@ -33,7 +38,11 @@ class Checklist(models.Model):
         verbose_name=_("門市"),
         on_delete=models.CASCADE,
     )
-    status = models.BooleanField(verbose_name=_("狀態"), default=False)
+    status = models.BooleanField(
+        verbose_name=_("狀態"),
+        default=StatusChoices.TODO,
+        choices=StatusChoices.choices,
+    )
     order = models.IntegerField(verbose_name=_("排序"), default=0)
     effective_start_date = models.DateField(
         verbose_name=_("生效起日"), default=timezone.now
@@ -50,6 +59,7 @@ class Checklist(models.Model):
         null=True,
         editable=False,
     )
+    is_archived = models.BooleanField(verbose_name=_("已封存"), default=False)
 
     def __str__(self) -> str:
         return f"{self.branch} - {self.template_id.content}"

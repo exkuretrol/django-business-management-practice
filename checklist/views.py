@@ -19,7 +19,7 @@ from core.utils import my_reverse
 
 from .filters import ChecklistBranchFilter, ChecklistFilter, ChecklistTemporaryFilter
 from .forms import ChecklistTemplateCreateForm, ChecklistTemplateUpdateForm
-from .models import Checklist, ChecklistTemplate
+from .models import Checklist, ChecklistTemplate, StatusChoices
 
 
 class ChecklistHomeView(TemplateView):
@@ -82,11 +82,11 @@ class ChecklistListView(LoginRequiredMixin, ListView):
     branch = Branch.objects.first()
 
     def get_queryset(self):
-        # TODO: regroup in get_queryset to avoid multiple query
         today = timezone.now().date()
         qs = super().get_queryset()
         return (
-            qs.filter(
+            qs.exclude(is_archived=True)
+            .filter(
                 branch=self.branch,
                 effective_start_date__lte=today,
                 effective_end_date__gte=today,

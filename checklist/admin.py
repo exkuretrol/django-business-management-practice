@@ -15,6 +15,7 @@ class ChecklistAdmin(admin.ModelAdmin):
         "effective_start_date",
         "effective_end_date",
         "created_at",
+        "is_archived",
         "last_modified",
         "last_modified_by",
     ]

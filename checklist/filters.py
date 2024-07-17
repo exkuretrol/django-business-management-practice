@@ -15,7 +15,7 @@ from core.widgets import (
 )
 
 from .forms import CheckListBranchForm
-from .models import Checklist, PriorityChoices
+from .models import Checklist, PriorityChoices, StatusChoices
 
 
 class ChecklistBranchFilter(filters.FilterSet):
@@ -45,7 +45,8 @@ class ChecklistBranchFilter(filters.FilterSet):
             return queryset.none()
 
         queryset = (
-            queryset.filter(
+            queryset.exclude(is_archived=True)
+            .filter(
                 effective_start_date__lte=timezone.now(),
                 effective_end_date__gte=timezone.now(),
             )

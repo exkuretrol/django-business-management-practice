@@ -1,0 +1,7 @@
+<div id="div-{{ input.input_type }}-id-{{ input.name|slugify }}">
+    <label for="{{ input.input_type }}-id-{{ input.name|slugify }}"
+        {% comment %} can't find a way to insert label, so I left it empty {% endcomment %}
+        class="form-label">
+    </label>
+    {% include "bootstrap5/layout/baseinput.html" %}
+</div>

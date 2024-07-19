@@ -1,12 +1,11 @@
 <script>
     $(() => {
-        let start_date_picker = new Litepicker({
-            element:document.getElementById("id_effective_start_date"),
-        })
-
         let div_start_date_picker = $("#div_id_effective_start_date")
         let div_end_date_picker = $("#div_id_effective_end_date")
 
+        let start_date_picker = new Litepicker({
+            element:document.getElementById("id_effective_start_date"),
+        })
         let end_date_picker = new Litepicker({
             element:document.getElementById("id_effective_end_date"),
         })

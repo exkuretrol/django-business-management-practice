@@ -15,6 +15,16 @@
             </div>
         </div>
     </div>
+    <div class="card mb-4">
+        <div class="d-flex align-items-stretch">
+            <div class="d-flex align-items-center justify-content-center flex-shrink-0 text-bg-info px-4 rounded-start">
+                <i class="pli-exclamation fs-2"></i>
+            </div>
+            <div class="flex-grow-1 py-3 ms-3">
+                <h5 class="mb-0 fw-bold text-info">完成後請勾選</h5>
+            </div>
+        </div>
+    </div>
     {% regroup checklist by priority as grouped_checklist %}
     {% for priority, p_list in grouped_checklist %}
         <div class="card mb-4">

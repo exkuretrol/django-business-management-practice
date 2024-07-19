@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Column, Div, Layout, Reset, Row, Submit
+from crispy_forms.layout import BaseInput, Column, Div, Layout, Reset, Row, Submit
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
@@ -45,6 +45,16 @@ class EffectiveDateCleanMixin:
         return cleaned_data
 
 
+class CheckBoxInput(BaseInput):
+    # template = ""
+    input_type = "checkbox"
+    field_classes = " ".join(["form-check-input"])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.attrs = {"type": self.input_type}
+
+
 class AnnouncementCreateForm(
     EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
 ):
@@ -72,7 +82,7 @@ class AnnouncementCreateForm(
         widgets = {
             "branchs": Bootstrap5TagsSelectMultiple,
             "effective_start_date": LitePickerDateInput,
-            "effective_end_date": LitePickerDateInput,
+            "effective_end_date": forms.TextInput,
             "status": Bootstrap5TagsSelect,
         }
 
@@ -84,8 +94,18 @@ class AnnouncementCreateForm(
             Div(
                 Div(
                     Row(
-                        Column("effective_start_date", css_class="col-6"),
-                        Column("effective_end_date", css_class="col-6"),
+                        Column("effective_start_date", css_class="col-6 col-lg-5"),
+                        Column("effective_end_date", css_class="col-6 col-lg-5"),
+                        Column(
+                            CheckBoxInput(
+                                name="is_no_end_date",
+                                value=None,
+                                template="bootstrap5/checkbox.html",
+                                checked=True,
+                                css_class="d-block",
+                            ),
+                            css_class="col-12 col-lg-2",
+                        ),
                     ),
                     "branchs",
                     css_class="card-body",

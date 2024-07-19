@@ -1,4 +1,4 @@
-{% with view_name=request.resolver_match.view_name app_name=request.resolver_match.app_name %}
+{% with view_name=request.resolver_match.view_name app_name=request.resolver_match.app_name url_name=request.resolver_match.url_name %}
     <nav id="mainnav-container" class="mainnav">
         <div class="mainnav__inner">
             <div class="mainnav__top-content scrollable-content pb-5">
@@ -30,11 +30,11 @@
                                 <li data-popper-arrow class="arrow"></li>
                                 <li class="nav-item">
                                     <a href="{% url 'announcement:create' %}"
-                                       class="nav-link {% if view_name == "announcement:create" %}active{% endif %}">新增公告</a>
+                                       class="nav-link {% if view_name == "announcement:create" or view_name == "announcement:create_from_copy" %}active{% endif %}">新增公告</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{% url 'announcement:branchs_list' %}"
-                                       class="nav-link {% if view_name == "announcement:branchs_list" %}active{% endif %}">總部查看公告欄</a>
+                                       class="nav-link {% if view_name == "announcement:branchs_list" or view_name == "announcement:update" or view_name == "announcement:delete" %}active{% endif %}">總部查看公告欄</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{% url 'announcement:list' %}"
@@ -56,7 +56,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{% url 'checklist:branchs_list' %}"
-                                       class="nav-link {% if view_name == 'checklist:branchs_list' %}active{% endif %}">總部查看待做清單</a>
+                                       class="nav-link {% if view_name == 'checklist:branchs_list' or view_name == 'checklist:update' or view_name == 'checklist:delete' %}active{% endif %}">總部查看待做清單</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{% url 'checklist:list' %}"

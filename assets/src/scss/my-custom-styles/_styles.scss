@@ -79,3 +79,9 @@ $mainnav-max-width: 20rem;
 a:has(button.header__btn) {
     color: inherit;
 }
+
+// aria controls starts with tags-menu with input type = text,
+// fix bootstrap tags placeholder color
+input[type="text"][aria-controls^="tags-menu"]::placeholder {
+    color: var(--bs-secondary-color);
+}

@@ -22,6 +22,18 @@ class CheckListBranchForm(CleanBranchsMixin, forms.Form):
 class ChecklistTemplateCreateForm(
     EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
 ):
+    priority_choices = (
+        (PriorityChoices.TEMPORARY, PriorityChoices(PriorityChoices.TEMPORARY).label),
+        (PriorityChoices.ROUTINE, PriorityChoices(PriorityChoices.ROUTINE).label),
+    )
+
+    priority = forms.ChoiceField(
+        label=_("種類"),
+        choices=priority_choices,
+        widget=forms.RadioSelect,
+        initial=PriorityChoices.TEMPORARY,
+    )
+
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
@@ -42,7 +54,6 @@ class ChecklistTemplateCreateForm(
 
         widgets = {
             "content": forms.TextInput,
-            "priority": forms.RadioSelect,
         }
 
         labels = {

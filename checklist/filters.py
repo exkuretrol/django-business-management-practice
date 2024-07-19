@@ -141,23 +141,7 @@ class ChecklistFilter(filters.FilterSet):
         if branchs is None or branchs == "":
             return Checklist.objects.none()
 
-        queryset = (
-            super()
-            .qs.values(
-                branch_no=F("branch"),
-                branch_name=F("branch__name"),
-                priority=F("template_id__priority"),
-                content=F("template_id__content"),
-                last_modified_date=F("last_modified"),
-            )
-            .order_by("branch_no", "priority")
-        )
-        from itertools import groupby
-        from operator import itemgetter
-
-        new_qs = groupby(queryset, key=itemgetter("branch_name"))
-
-        return [{branch_name: list(branch_qs)} for branch_name, branch_qs in new_qs]
+        return super().qs
 
     class Meta:
         model = Checklist
@@ -203,5 +187,5 @@ class ChecklistTemporaryFilter(ChecklistFilter):
 
     @property
     def qs(self):
-        queryset = super().qs
-        return queryset.filter(template_id__priority=PriorityChoices.TEMPORARY)
+        queryset_list = super().qs
+        return queryset_list.filter(template_id__priority=PriorityChoices.TEMPORARY)

@@ -204,9 +204,42 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
     template_name = "checklist_export.html"
     paginate_by = 5
 
+    def get(self, request, *args, **kwargs):
+        filterset_class = self.get_filterset_class()
+        self.filterset = self.get_filterset(filterset_class)
+
+        if (
+            not self.filterset.is_bound
+            or self.filterset.is_valid()
+            or not self.get_strict()
+        ):
+            self.object_list = self.filterset.qs
+        else:
+            self.object_list = self.filterset.queryset.none()
+        queryset = self.object_list.values(
+            branch_no=F("branch"),
+            branch_name=F("branch__name"),
+            priority=F("template_id__priority"),
+            content=F("template_id__content"),
+            last_modified_date=F("last_modified"),
+        ).order_by("branch_no", "priority")
+        from itertools import groupby
+        from operator import itemgetter
+
+        new_qs = groupby(queryset, key=itemgetter("branch_name"))
+
+        self.object_list = [
+            {branch_name: list(branch_qs)} for branch_name, branch_qs in new_qs
+        ]
+
+        context = self.get_context_data(
+            filter=self.filterset, object_list=self.object_list
+        )
+
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # raise
         return context
 
 

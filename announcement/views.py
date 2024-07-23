@@ -3,7 +3,6 @@ from typing import Any
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.utils import timezone
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -13,8 +12,6 @@ from django.views.generic import (
 )
 from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
-
-from core.models import File
 
 from .filters import AnnouncementBranchsFilter, AnnouncementFilter
 from .forms import AnnouncementCreateForm, AnnouncementUpdateForm
@@ -38,26 +35,21 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
     """
 
     form_class = AnnouncementCreateForm
+    model = Announcement
     template_name = "announcement_create.html"
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        form.last_modified_by = self.request.user
-        files = form.cleaned_data.get("attachments")
-        obj = form.save()
-
-        for file_ in files:
-            # create and save the attachment object to the database,
-            # then manually add it to the announcement
-            file_obj = File.objects.create(
-                name=file_.name, attachment=file_, create_datetime=timezone.now()
-            )
-            obj.attachments.add(file_obj)
-
-        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("announcement:branchs_list")
+
+    def post(self, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            raise
+            return self.form_invalid(form)
 
 
 class AnnouncementCreateFromCopyView(AnnouncementCreateView):

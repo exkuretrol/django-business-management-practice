@@ -1,9 +1,12 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import BaseInput, Column, Div, Layout, Reset, Row, Submit
 from django import forms
+from django.db import transaction
+from django.forms import formset_factory, inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 
 from branch.forms import CleanBranchsMixin, get_all_branch_choices
+from core.models import File
 from core.widgets import (
     Bootstrap5TagsSelect,
     Bootstrap5TagsSelectMultiple,
@@ -55,11 +58,43 @@ class CheckBoxInput(BaseInput):
         self.attrs = {"type": self.input_type}
 
 
-class AnnouncementCreateForm(
-    EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
-):
+class AnnouncementAttachmentForm(forms.ModelForm):
+
+    class Meta:
+        model = Announcement.attachments.through
+        fields = ["file"]
+        # widgets = {"file": Bootstrap5TagsSelect}
+        labels = {"file": _("附件")}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["file"].required = False
+        self.fields["file"].empty_label = _("請選擇一個檔案")
+        helper = FormHelper()
+        helper.disable_csrf = True
+        helper.form_tag = False
+        helper.layout = Layout(
+            Row(
+                Column("file", css_class="col-10"),
+                Div(css_class="col-2"),
+                css_id="Announcement_attachments-0",
+            )
+        )
+        self.helper = helper
+
+
+AttachmentInlineFormSet = inlineformset_factory(
+    Announcement,
+    Announcement.attachments.through,
+    form=AnnouncementAttachmentForm,
+    extra=1,
+    can_delete=False,
+    max_num=5,
+)
+
+
+class AnnouncementCreateForm(CleanBranchsMixin, forms.ModelForm):
     # TODO: let user change the file name
-    attachments = MultipleFileField(label=_("附件"), required=False)
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
@@ -88,8 +123,14 @@ class AnnouncementCreateForm(
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.attachment_formset = AttachmentInlineFormSet(
+            data=kwargs.get("data"), instance=self.instance
+        )
+
         helper = FormHelper()
         helper.include_media = False
+        helper.form_tag = False
+        helper.disable_csrf = True
         helper.layout = Layout(
             Div(
                 Div(
@@ -116,7 +157,6 @@ class AnnouncementCreateForm(
                 Div(
                     "title",
                     "content",
-                    "attachments",
                     "status",
                     Div(
                         Submit("submit", _("送出"), css_class="btn btn-primary"),
@@ -125,11 +165,30 @@ class AnnouncementCreateForm(
                     ),
                     css_class="card-body",
                 ),
-                css_class="card",
+                css_class="card mb-4",
             ),
         )
 
         self.helper = helper
+
+    def save(self, **kwargs):
+        with transaction.atomic():
+            announcement = super().save(**kwargs)
+            self.attachment_formset.instance = announcement
+            self.attachment_formset.save()
+
+            return announcement
+
+    def clean(self):
+        super().clean()
+        self.attachment_formset.clean()
+        return self.cleaned_data
+
+    def is_valid(self):
+        return super().is_valid() and self.attachment_formset.is_valid()
+
+    def has_changed(self):
+        return super().has_changed() or self.attachment_formset.has_changed()
 
 
 class AnnouncementUpdateForm(AnnouncementCreateForm):

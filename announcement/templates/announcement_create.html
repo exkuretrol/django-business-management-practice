@@ -1,7 +1,23 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    {% crispy form form.helper %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% crispy form form.helper %}
+        <div class="card">
+            <div class="card-body">
+                <div class="formset">
+                    {{ form.attachment_formset.management_form|crispy }}
+                    {% for formset_form in form.attachment_formset %}
+                        {% crispy formset_form formset_form.helper %}
+                    {% endfor %}
+                    <div id="Announcement_attachments-empty" class="d-none ">
+                        {% crispy form.attachment_formset.empty_form form.attachment_formset.empty_form.helper %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock content %}
 {% block head %}
     {% include "includes/media/quill.html" %}

@@ -5,7 +5,7 @@ from django.urls import include, path
 from django.views.generic import TemplateView
 
 from .api import api
-from .views import ExternalLinkView, NewLoginView
+from .views import ExternalLinkView, NewLoginView, download_file, update_file
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
@@ -17,6 +17,8 @@ urlpatterns = [
     path("api/", api.urls),
     path("accounts/login/", NewLoginView.as_view(), name="login"),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("file/", update_file, name="upload_file"),
+    path("file/<int:pk>/", download_file, name="download_file"),
 ]
 
 if settings.DEBUG:

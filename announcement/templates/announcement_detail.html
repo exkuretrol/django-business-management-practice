@@ -45,7 +45,7 @@
                             {% for attachment in attachments %}
                                 <p>
                                     <i class="pli-download-from-cloud fs-5"></i>
-                                    <a href="{{ attachment.attachment.url }}"
+                                    <a href="{{ attachment.file.url }}"
                                        class="ms-2 btn-link text-decoration-underline"
                                        target="_blank">{{ attachment.name }}</a>
                                 </p>
@@ -54,7 +54,7 @@
                     {% endwith %}
                 </div>
             </div>
-            <a class="btn btn-primary mt-3" href="{% url 'announcement:list' %}">關閉公告</a>
+            <button class="btn btn-primary mt-3" onclick="window.history.back()">關閉公告</button>
         </div>
     </div>
 {% endblock content %}

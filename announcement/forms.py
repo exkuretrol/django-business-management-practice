@@ -1,8 +1,9 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import BaseInput, Column, Div, Layout, Reset, Row, Submit
+from dal import autocomplete
 from django import forms
 from django.db import transaction
-from django.forms import formset_factory, inlineformset_factory
+from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 
 from branch.forms import CleanBranchsMixin, get_all_branch_choices
@@ -63,20 +64,21 @@ class AnnouncementAttachmentForm(forms.ModelForm):
     class Meta:
         model = Announcement.attachments.through
         fields = ["file"]
-        # widgets = {"file": Bootstrap5TagsSelect}
-        labels = {"file": _("附件")}
+        labels = {"file": _("附件1")}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["file"].required = False
-        self.fields["file"].empty_label = _("請選擇一個檔案")
+        self.fields["file"].empty_label = _("請選擇附件")
         helper = FormHelper()
         helper.disable_csrf = True
         helper.form_tag = False
         helper.layout = Layout(
             Row(
                 Column("file", css_class="col-10"),
-                Div(css_class="col-2"),
+                Div(
+                    css_class="col-2 d-grid justify-content-center align-items-end mb-4"
+                ),
                 css_id="Announcement_attachments-0",
             )
         )
@@ -93,8 +95,9 @@ AttachmentInlineFormSet = inlineformset_factory(
 )
 
 
-class AnnouncementCreateForm(CleanBranchsMixin, forms.ModelForm):
-    # TODO: let user change the file name
+class AnnouncementCreateForm(
+    EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
+):
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
@@ -160,7 +163,7 @@ class AnnouncementCreateForm(CleanBranchsMixin, forms.ModelForm):
                     "status",
                     Div(
                         Submit("submit", _("送出"), css_class="btn btn-primary"),
-                        Reset("clear", _("清除"), css_class="btn btn-secondary"),
+                        Reset("clear", _("清除"), css_class="btn btn-light"),
                         css_class="d-flex gap-2",
                     ),
                     css_class="card-body",
@@ -191,8 +194,25 @@ class AnnouncementCreateForm(CleanBranchsMixin, forms.ModelForm):
         return super().has_changed() or self.attachment_formset.has_changed()
 
 
-class AnnouncementUpdateForm(AnnouncementCreateForm):
-    attachments = None
+class AnnouncementUpdateForm(forms.ModelForm):
+    # TODO: implement update form
+    class Meta:
+        model = Announcement
+        fields = [
+            "title",
+            "content",
+            "effective_start_date",
+            "effective_end_date",
+            "branchs",
+            "status",
+        ]
+
+        widgets = {
+            "branchs": Bootstrap5TagsSelectMultiple,
+            "effective_start_date": LitePickerDateInput,
+            "effective_end_date": forms.TextInput,
+            "status": Bootstrap5TagsSelect,
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -204,6 +224,47 @@ class AnnouncementUpdateForm(AnnouncementCreateForm):
                 )
             }
         )
+        helper = FormHelper()
+        helper.include_media = False
+        helper.form_tag = False
+        helper.disable_csrf = True
+        helper.layout = Layout(
+            Div(
+                Div(
+                    Row(
+                        Column("effective_start_date", css_class="col-6 col-lg-5"),
+                        Column("effective_end_date", css_class="col-6 col-lg-5"),
+                        Column(
+                            CheckBoxInput(
+                                name="is_no_end_date",
+                                value=None,
+                                template="bootstrap5/checkbox.html",
+                                checked=True,
+                                css_class="d-block",
+                            ),
+                            css_class="col-12 col-lg-2",
+                        ),
+                    ),
+                    "branchs",
+                    css_class="card-body",
+                ),
+                css_class="card mb-4",
+            ),
+            Div(
+                Div(
+                    "title",
+                    "content",
+                    "status",
+                    Div(
+                        Submit("submit", _("更新"), css_class="btn btn-primary"),
+                        css_class="d-flex gap-2",
+                    ),
+                    css_class="card-body",
+                ),
+                css_class="card mb-4",
+            ),
+        )
+        self.helper = helper
 
     def save(self, user):
         instance = super().save(commit=False)

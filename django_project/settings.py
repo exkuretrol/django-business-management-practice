@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     "django_filters",
     "debug_toolbar",
     "django_extensions",
+    "dal",
+    "dal_select2",
     # local apps
     "core",
     "branch",

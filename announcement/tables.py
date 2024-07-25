@@ -39,7 +39,7 @@ class AnnouncementTable(tables.Table):
         for attachment in attachments:
             attachment_buttons.append(
                 f"""
-                <a href="{attachment.file_path.url}" class="btn btn-warning rounded-pill" target="_blank">
+                <a href="{attachment.file.url}" class="btn btn-warning rounded-pill" target="_blank">
                     <i class="pli-download-from-cloud"></i>
                     {attachment.name}
                 </a>

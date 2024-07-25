@@ -203,6 +203,25 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-autocomplete-light"
+version = "3.11.0"
+description = "Fresh autocompletes for Django"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-autocomplete-light-3.11.0.tar.gz", hash = "sha256:212576a17e3308ef7ca77e280b86684167916d2091d4b73640f38845d9516328"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+
+[package.extras]
+genericm2m = ["django-generic-m2m"]
+gfk = ["django-querysetsequence (>=0.11)"]
+nested = ["django-nested-admin (>=3.0.21)"]
+tags = ["django-taggit"]
+
+[[package]]
 name = "django-cache-url"
 version = "3.4.5"
 description = "Use Cache URLs in your Django application."
@@ -1539,4 +1558,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "9c0e16752b587ae4cfe0313cb8ebc18fe59825fb16effec0b07f5eb12417a62e"
+content-hash = "53710b692368d9f1caf97069e5f44ccb5b99c50a9a21980e148145f67e79e99d"

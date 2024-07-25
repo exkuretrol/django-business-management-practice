@@ -1,7 +1,12 @@
+import hashlib
+
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Submit
+from crispy_forms.layout import Div, Hidden, Layout, Submit
+from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext_lazy as _
+
+from .models import File
 
 
 class LoginForm(AuthenticationForm):
@@ -21,3 +26,50 @@ class LoginForm(AuthenticationForm):
             ),
         )
         self.helper = helper
+
+
+class FileUploadForm(forms.ModelForm):
+    class Meta:
+        model = File
+        fields = ["name", "file", "extension"]
+        widgets = {"extension": forms.HiddenInput()}
+        help_texts = {"name": _("檔案名稱。留空則使用檔案原始名稱")}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.keys():
+            if field in ["name", "extension"]:
+                self.fields[field].required = False
+        helper = FormHelper()
+        helper.form_id = "file_upload_form"
+        helper.layout = Layout("name", "file", Hidden("extension", None))
+        self.helper = helper
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        file = cleaned_data.get("file", None)
+        sha256_hash = hashlib.sha256()
+
+        f = file.open("rb")
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+
+        existed_file = File.objects.filter(hash=sha256_hash.hexdigest())
+
+        if existed_file.exists():
+            self.add_error(
+                "file",
+                _(f"檔案在伺服器中已存在。檔案名稱：{existed_file.first().name}。"),
+            )
+            f.close()
+
+        if "." not in file.name:
+            cleaned_data["extension"] = None
+        else:
+            cleaned_data["extension"] = file.name.rsplit(".", 1)[1]
+
+        if cleaned_data.get("name") == "":
+            cleaned_data["name"] = file.name.rsplit(".", 1)[0]
+
+        return cleaned_data

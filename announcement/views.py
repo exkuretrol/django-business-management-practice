@@ -13,6 +13,8 @@ from django.views.generic import (
 from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
+from core.forms import FileUploadForm
+
 from .filters import AnnouncementBranchsFilter, AnnouncementFilter
 from .forms import AnnouncementCreateForm, AnnouncementUpdateForm
 from .models import Announcement
@@ -38,6 +40,11 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
     model = Announcement
     template_name = "announcement_create.html"
 
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        context["file_upload_form"] = FileUploadForm
+        return context
+
     def get_success_url(self):
         return reverse("announcement:branchs_list")
 
@@ -48,7 +55,6 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
         if form.is_valid():
             return self.form_valid(form)
         else:
-            raise
             return self.form_invalid(form)
 
 
@@ -138,6 +144,9 @@ class AnnouncementUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form: AnnouncementUpdateForm):
         self.object = form.save(user=self.request.user)
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        return super().get_context_data(**kwargs)
 
 
 class AnnouncementDeleteView(LoginRequiredMixin, DeleteView):

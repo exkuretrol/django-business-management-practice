@@ -1,6 +1,6 @@
-from typing import List, Literal, Optional
+from typing import Any, List, Literal, Optional
 
-from ninja import NinjaAPI, Schema
+from ninja import File, NinjaAPI, Schema
 
 from announcement.models import Announcement, StatusChoices
 from checklist.models import Checklist

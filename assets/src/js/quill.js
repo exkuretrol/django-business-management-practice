@@ -8,12 +8,21 @@ import Italic from "quill/formats/italic";
 import Underline from "quill/formats/underline";
 import Link from "quill/formats/link";
 class MyLink extends Link {
+    static PROTOCOL_WHITELIST = ["http", "https"];
     static create(value) {
         const node = Link.create(value);
-        value = Link.sanitize(value);
+        value = MyLink.sanitize(value);
         node.setAttribute("href", value);
         node.removeAttribute("target");
         return node;
+    }
+
+    static sanitize(url) {
+        // make sure the link add "https://" if it doesn't have protocol
+        if (url.indexOf(":") == -1) {
+            url = "https://" + url;
+        }
+        return super.sanitize(url);
     }
 
     format(name, value) {

@@ -11,6 +11,9 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+    def is_branch(self):
+        return True
+
 
 def hash_file_name(instance, filename):
     return f"attachments/{uuid.uuid4().hex}"

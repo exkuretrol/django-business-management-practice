@@ -5,23 +5,105 @@ $(() => {
     const branchs_tag = Tags.getInstance(document.getElementById("id_branchs"));
     const quill = Quill.find(document.getElementById("quill-id_content"));
     const is_no_end_date_label = $("label[for=checkbox-id-is_no_end_date]");
+    const announcement_status = $("input[name=status]");
+    const draft_button = form.find("input[name=draft]");
+    const publish_button = form.find("input[name=publish]");
 
     is_no_end_date_label.text("沒有結束日期");
 
     const is_no_end_date = $("#checkbox-id-is_no_end_date");
 
-    if (form) {
-        form.find("input[type=reset]").on("click", (e) => {
-            e.preventDefault();
-            if (quill) {
-                quill.setText("");
+    form.find("input[type=reset]").on("click", (e) => {
+        e.preventDefault();
+        if (quill) {
+            quill.setText("");
+        }
+
+        form.find("input[name=title]").val("");
+        branchs_tag.removeAll();
+    });
+
+    let attachments_to_delete = [];
+
+    const form_submit_handler = (form) => {
+        if (attachments_to_delete.length > 0) {
+            max_forms.val(
+                parseInt(max_forms.val()) + attachments_to_delete.length
+            );
+            total_forms.val(
+                parseInt(total_forms.val()) + attachments_to_delete.length
+            );
+            formset
+                .find("tr[id^=Announcement_attachments]:not(.d-none)")
+                .each((i, el) => {
+                    if ($(el).find("select").val() == "") {
+                        $(el).remove();
+                        next_index--;
+                        total_forms.val(total_forms.val() - 1);
+                    }
+                });
+
+            const forms = get_attachment_rows(false);
+            let i, form_count;
+            const update_element_callback = (el) => {
+                update_element_index(el, prefix, i);
+            };
+
+            for (i = 0, form_count = forms.length; i < forms.length; i++) {
+                update_element_index(forms.get(i), prefix, i);
+                $(forms.get(i))
+                    .find("*")
+                    .each((i, el) => update_element_callback(el));
             }
 
-            $("#filter_form input[type=text]").val("");
-            $("#filter_form input[type=date]").val("");
-            branchs_tag.removeAll();
-        });
-    }
+            for (let i = 0; i < attachments_to_delete.length; i++) {
+                formset.append(
+                    $("<input>", {
+                        name: prefix + "-" + next_index + "-id",
+                        value: attachments_to_delete[i].id,
+                        type: "hidden",
+                    })
+                );
+                formset.append(
+                    $("<input>", {
+                        name: prefix + "-" + next_index + "-file",
+                        value: attachments_to_delete[i].file,
+                        type: "hidden",
+                    })
+                );
+                formset.append(
+                    $("<input>", {
+                        name: prefix + "-" + next_index + "-announcement",
+                        value: attachments_to_delete[i].announcement,
+                        type: "hidden",
+                    })
+                );
+                formset.append(
+                    $("<input>", {
+                        name: prefix + "-" + next_index + "-DELETE",
+                        value: "on",
+                        type: "hidden",
+                    })
+                );
+                next_index++;
+            }
+        }
+        return true;
+    };
+
+    form.on("submit", form_submit_handler.bind(this));
+
+    draft_button.on("click", (e) => {
+        e.preventDefault();
+        announcement_status.val("0");
+        form.trigger("submit");
+    });
+
+    publish_button.on("click", (e) => {
+        e.preventDefault();
+        announcement_status.val("1");
+        form.trigger("submit");
+    });
 
     end_date_el = document.getElementById("id_effective_end_date");
     let end_date_picker = new Litepicker({
@@ -64,24 +146,23 @@ $(() => {
     );
     const get_attachment_rows = (include_empty) => {
         if (include_empty)
-            return formset.find("div[id^=Announcement_attachments-]");
-        return formset.find("div[id^=Announcement_attachments-]:not(.d-none)");
+            return formset.find("tr[id^=Announcement_attachments-]");
+        return formset.find("tr[id^=Announcement_attachments-]:not(.d-none)");
     };
 
-    const template = $("#" + prefix + "-empty");
-    template.children("[id^=Announcement_attachments]").removeAttr("id");
+    const template = formset.find(".d-none.empty-form");
 
     get_attachment_rows(false)
         .find("select")
         .map((i, el) => {
-            Tags.init("#" + el.id, { allowClear: true });
+            Tags.init("#" + el.id, {
+                placeholder: "請選擇一個檔案",
+            });
         });
 
     const update_element_index = (el, prefix, idx) => {
         const id_regex = new RegExp(prefix + "-(\\d+|__prefix__)");
         const replacement = prefix + "-" + idx;
-
-        if (el.tagName == "LABEL") $(el).text("附件" + (idx + 1));
         if ($(el).prop("for"))
             $(el).prop("for", $(el).prop("for").replace(id_regex, replacement));
         if (el.id) el.id = el.id.replace(id_regex, replacement);
@@ -101,7 +182,7 @@ $(() => {
         row.insertBefore(template);
         row.find("select");
         Tags.init("#id_" + prefix + "-" + next_index + "-file", {
-            allowClear: true,
+            placeholder: "請選擇一個檔案",
         });
         $(total_forms).val(parseInt(total_forms.val(), 10) + 1);
         next_index++;
@@ -114,10 +195,7 @@ $(() => {
     add_button.on("click", add_inline_click_handler.bind(this));
 
     const add_inline_delete_button = (row) => {
-        let delete_button_location;
-        if (row.children(":last").hasClass("row"))
-            delete_button_location = row.children(":last").children(":last");
-        else delete_button_location = row.children(":last");
+        const delete_button_location = row.children(":last");
         delete_button_location.append(
             '<button class="btn btn-icon btn-xs btn-danger rounded-circle"><i class="psi-trash"></i></button>'
         );
@@ -131,8 +209,18 @@ $(() => {
         e.preventDefault();
         const delete_button = $(e.target);
         const row = delete_button.closest(
-            "div[id^=Announcement_attachments]:not(.d-none)"
+            "tr[id^=Announcement_attachments]:not(.d-none)"
         );
+        if (row.hasClass("has_original")) {
+            attachments_to_delete.push({
+                id: row.find("input[type=hidden][name$=id]").val(),
+                file: row.find("select").val(),
+                announcement: row
+                    .find("input[type=hidden][name$=announcement]")
+                    .val(),
+            });
+            console.log(attachments_to_delete);
+        }
         row.remove();
         next_index--;
         const forms = get_attachment_rows(false);
@@ -153,8 +241,7 @@ $(() => {
     };
 
     formset
-        .children()
-        .filter("div[id^=Announcement_attachments]:not(.d-none)")
+        .find("tr[id^=Announcement_attachments]:not(.d-none)")
         .each((i, el) => {
             const row = $(el);
             add_inline_delete_button(row);
@@ -236,6 +323,7 @@ $(() => {
         const tag = get_bootstrap5_tag_instance(empty_select_input);
         tag.setItem(new_file.value);
     };
+
     const update_empty_select_input = (new_file) => {
         let opt = $("<option>", {
             value: new_file.value,
@@ -249,7 +337,6 @@ $(() => {
         file_upload_form.trigger("reset");
         file_upload_modal.modal("hide");
         file_input.removeClass("is-invalid");
-        console.log(res);
         update_empty_select_input(res.object);
         update_all_select_inputs(get_attachment_rows(false), res.object);
         select_new_file(res.object);

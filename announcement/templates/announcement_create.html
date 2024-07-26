@@ -10,13 +10,10 @@
             </div>
             <div class="card-body">
                 <div id="formset">
-                    {{ form.attachment_formset.management_form|crispy }}
-                    {% for formset_form in form.attachment_formset %}
+                    {% comment %} {% for formset_form in form.attachment_formset %}
                         {% crispy formset_form formset_form.helper %}
-                    {% endfor %}
-                    <div id="Announcement_attachments-empty" class="d-none ">
-                        {% crispy form.attachment_formset.empty_form form.attachment_formset.empty_form.helper %}
-                    </div>
+                    {% endfor %} {% endcomment %}
+                    {% crispy form.attachment_formset formset_helper %}
                 </div>
             </div>
             <div class="card-footer d-flex gap-2">
@@ -25,7 +22,7 @@
                         class="btn btn-light"
                         id="upload_attachment"
                         data-bs-toggle="modal"
-                        data-bs-target="#LGModal">上傳檔案</button>
+                        data-bs-target="#LGModal">上傳新檔案</button>
             </div>
         </div>
     </form>
@@ -39,7 +36,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="LGModalLabel">上傳新附件</h1>
+                    <h1 class="modal-title fs-5" id="LGModalLabel">上傳新檔案</h1>
                     <button type="button"
                             class="btn-close"
                             data-bs-dismiss="modal"

@@ -4,11 +4,60 @@
     <form action="" method="post">
         {% csrf_token %}
         {% crispy form form.helper %}
+        <div class="card">
+            <div class="card-title">
+                <h4 class="card-header">與公告關聯的附件</h4>
+            </div>
+            <div class="card-body">
+                <div id="formset">
+                    {% comment %} {{ form.attachment_formset.management_form|crispy }}
+                    {% for formset_form in form.attachment_formset %}
+                        {% crispy formset_form formset_form.helper %}
+                    {% endfor %}
+                    <div id="Announcement_attachments-empty" class="d-none ">
+                        {% crispy form.attachment_formset.empty_form form.attachment_formset.empty_form.helper %}
+                    </div> {% endcomment %}
+                    {% crispy form.attachment_formset formset_helper %}
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <button type="button" class="btn btn-primary" id="add_attachment">新增附件</button>
+                <button type="button"
+                        class="btn btn-light"
+                        id="upload_attachment"
+                        data-bs-toggle="modal"
+                        data-bs-target="#LGModal">上傳新檔案</button>
+            </div>
+        </div>
     </form>
+    {% comment %} djlint:off H021 {% endcomment %}
+    <div class="modal fade"
+         id="LGModal"
+         tabindex="-1"
+         aria-labelledby="LGModalLabel"
+         style="display: none"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="LGModalLabel">上傳新檔案</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">{% crispy file_upload_form file_upload_form.helper %}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary">上傳</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 {% block head %}
     {% include "includes/media/quill.html" %}
-    {% include "includes/head/announcement_update.html" %}
+    {% include "includes/head/announcement_create.html" %}
 {% endblock head %}
 {% block header %}
     <h1 class="page-title mb-0 mt-2">更新公告</h1>

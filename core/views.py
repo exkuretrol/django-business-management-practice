@@ -1,5 +1,6 @@
 from dal import autocomplete
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, HttpRequest, JsonResponse
 from django.views.generic import TemplateView
 
@@ -41,5 +42,8 @@ def update_file(request: HttpRequest) -> JsonResponse:
 
 
 def download_file(request: HttpRequest, file_id: int) -> FileResponse:
-    file_ = File.objects.get(id=file_id)
-    return FileResponse(file_.file, as_attachment=True, filename=file_.name)
+    if not request.user.is_branch_member():
+        raise PermissionDenied
+    file_ = File.objects.get(pk=file_id)
+    filename = file_.name + "." + file_.extension if file_.extension else file_.name
+    return FileResponse(file_.file, as_attachment=True, filename=filename)

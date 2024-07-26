@@ -16,7 +16,7 @@ from django_tables2 import SingleTableMixin
 from core.forms import FileUploadForm
 
 from .filters import AnnouncementBranchsFilter, AnnouncementFilter
-from .forms import AnnouncementCreateForm, AnnouncementUpdateForm
+from .forms import AnnouncementCreateForm, AnnouncementUpdateForm, FormsetHelper
 from .models import Announcement
 from .tables import AnnouncementBranchsTable, AnnouncementTable
 
@@ -43,6 +43,7 @@ class AnnouncementCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context["file_upload_form"] = FileUploadForm
+        context["formset_helper"] = FormsetHelper
         return context
 
     def get_success_url(self):
@@ -146,7 +147,10 @@ class AnnouncementUpdateView(LoginRequiredMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        context["file_upload_form"] = FileUploadForm
+        context["formset_helper"] = FormsetHelper
+        return context
 
 
 class AnnouncementDeleteView(LoginRequiredMixin, DeleteView):

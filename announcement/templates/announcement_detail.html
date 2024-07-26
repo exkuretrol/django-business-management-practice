@@ -1,81 +1,89 @@
 {% extends "_base.html" %}
 {% load externalblock from external_link_tags %}
-{% block content %}
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">發佈對象、發佈日期</h5>
-            <div class="row gx-4">
-                <div class="col-6">
-                    <h6 class="card-title">起始日期</h6>
-                    <p class="card-text mb-3">{{ announcement.effective_start_date }}</p>
-                </div>
-                <div class="col-6">
-                    <h6 class="card-title">結束日期</h6>
-                    <p class="card-text mb-3">{{ announcement.effective_end_date }}</p>
-                </div>
-                <div class="col-12">
-                    <h6 class="card-title">門市</h6>
-                    {% for branch in announcement.branchs.all %}
-                        <span class="badge bg-light text-dark">{{ branch.name }}</span>
-                    {% empty %}
-                        <span class="badge bg-light text-dark">所有門市</span>
-                    {% endfor %}
+{% with view_name=request.resolver_match.view_name %}
+    {% block content %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">發佈對象、發佈日期</h5>
+                <div class="row gx-4">
+                    <div class="col-6">
+                        <h6 class="card-title">起始日期</h6>
+                        <p class="card-text mb-3">{{ announcement.effective_start_date }}</p>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="card-title">結束日期</h6>
+                        <p class="card-text mb-3">{{ announcement.effective_end_date }}</p>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="card-title">門市</h6>
+                        {% for branch in announcement.branchs.all %}
+                            <span class="badge bg-light text-dark">{{ branch.name }}</span>
+                        {% empty %}
+                            <span class="badge bg-light text-dark">所有門市</span>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <h5>公告欄內容</h5>
-            <div class="d-flex flex-column gap-3">
-                <div>
-                    <h6 class="card-title">公告名稱</h6>
-                    <p>{{ announcement.title }}</p>
+        <div class="card">
+            <div class="card-body">
+                <h5>公告欄內容</h5>
+                <div class="d-flex flex-column gap-3">
+                    <div>
+                        <h6 class="card-title">公告名稱</h6>
+                        <p>{{ announcement.title }}</p>
+                    </div>
+                    <div>
+                        <h6 class="card-title">公告內容</h6>
+                        {% externalblock %}
+                        {{ announcement.content.html|safe }}
+                        {% externalblock %}
+                    </div>
+                    <div>
+                        {% with announcement.attachments.all as attachments %}
+                            {% if attachments %}
+                                <h6>附件</h6>
+                                {% for attachment in attachments %}
+                                    <p>
+                                        <i class="pli-download-from-cloud fs-5"></i>
+                                        <a href="{% url 'download_file' attachment.pk %}"
+                                           class="ms-2 btn-link text-decoration-underline"
+                                           target="_blank">{{ attachment.name }}
+                                            {% if attachment.extension %}.{{ attachment.extension }}{% endif %}
+                                        </a>
+                                    </p>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                    </div>
                 </div>
-                <div>
-                    <h6 class="card-title">公告內容</h6>
-                    {% externalblock %}
-                    {{ announcement.content.html|safe }}
-                    {% externalblock %}
-                </div>
-                <div>
-                    {% with announcement.attachments.all as attachments %}
-                        {% if attachments %}
-                            <h6>附件</h6>
-                            {% for attachment in attachments %}
-                                <p>
-                                    <i class="pli-download-from-cloud fs-5"></i>
-                                    <a href="{{ attachment.file.url }}"
-                                       class="ms-2 btn-link text-decoration-underline"
-                                       target="_blank">{{ attachment.name }}</a>
-                                </p>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                </div>
+                <button class="btn btn-primary mt-3" onclick="window.history.back()">關閉公告</button>
             </div>
-            <button class="btn btn-primary mt-3" onclick="window.history.back()">關閉公告</button>
         </div>
-    </div>
-{% endblock content %}
-{% block header %}
-    <h1 class="page-title mt-2">公告明細</h1>
-{% endblock header %}
-{% block breadcrumb %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{% url 'home' %}">首頁</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'announcement:index' %}">公告欄管理</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'announcement:list' %}">總部查看公告欄</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">
-                {{ announcement.effective_start_date }} {{ announcement.title }}
-            </li>
-        </ol>
-    </nav>
-{% endblock breadcrumb %}
+    {% endblock content %}
+    {% block header %}
+        <h1 class="page-title mt-2">公告明細</h1>
+    {% endblock header %}
+    {% block breadcrumb %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}">首頁</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'announcement:index' %}">公告欄管理</a>
+                </li>
+                <li class="breadcrumb-item">
+                    {% if user.is_branch %}
+                        <a href="{% url 'announcement:branchs_list' %}">總部查看公告欄</a>
+                    {% else %}
+                        <a href="{% url 'announcement:list' %}">門市查看公告欄</a>
+                    {% endif %}
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {{ announcement.effective_start_date }} {{ announcement.title }}
+                </li>
+            </ol>
+        </nav>
+    {% endblock breadcrumb %}
+{% endwith %}

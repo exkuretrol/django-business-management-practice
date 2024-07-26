@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django_quill.fields import FieldQuill
@@ -39,7 +40,7 @@ class AnnouncementTable(tables.Table):
         for attachment in attachments:
             attachment_buttons.append(
                 f"""
-                <a href="{attachment.file.url}" class="btn btn-warning rounded-pill" target="_blank">
+                <a href="{reverse("download_file", kwargs={"file_id": attachment.pk})}" class="btn btn-warning rounded-pill" target="_blank">
                     <i class="pli-download-from-cloud"></i>
                     {attachment.name}
                 </a>

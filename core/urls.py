@@ -18,7 +18,7 @@ urlpatterns = [
     path("accounts/login/", NewLoginView.as_view(), name="login"),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("file/", update_file, name="upload_file"),
-    path("file/<int:pk>/", download_file, name="download_file"),
+    path("file/<uuid:file_id>/", download_file, name="download_file"),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,285 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-26 12:03+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: announcement/apps.py:8 announcement/models.py:63 announcement/models.py:64
+msgid "公告"
+msgstr ""
+
+#: announcement/filters.py:19 announcement/filters.py:86
+#: announcement/models.py:26
+msgid "標題"
+msgstr ""
+
+#: announcement/filters.py:24 announcement/models.py:27 checklist/filters.py:88
+#: checklist/models.py:86
+msgid "內容"
+msgstr ""
+
+#: announcement/filters.py:30 announcement/filters.py:93
+msgid "起始日期"
+msgstr ""
+
+#: announcement/filters.py:35 announcement/filters.py:99
+msgid "結束日期"
+msgstr ""
+
+#: announcement/filters.py:38
+msgid "不指定"
+msgstr ""
+
+#: announcement/filters.py:42 announcement/forms.py:110
+#: announcement/models.py:38 checklist/filters.py:69 checklist/forms.py:38
+#: checklist/forms.py:142 checklist/models.py:38 checklist/models.py:84
+msgid "門市"
+msgstr ""
+
+#: announcement/filters.py:45
+msgid "請選擇門市"
+msgstr ""
+
+#: announcement/forms.py:55
+msgid "結束日期不可早於開始日期"
+msgstr ""
+
+#: announcement/forms.py:75
+msgid "附件1"
+msgstr ""
+
+#: announcement/forms.py:80
+msgid "請選擇附件"
+msgstr ""
+
+#: announcement/forms.py:174
+msgid "直接發佈"
+msgstr ""
+
+#: announcement/forms.py:176
+msgid "清除"
+msgstr ""
+
+#: announcement/forms.py:179
+msgid "儲存草稿"
+msgstr ""
+
+#: announcement/forms.py:272 checklist/forms.py:200
+msgid "更新"
+msgstr ""
+
+#: announcement/models.py:12
+msgid "草稿"
+msgstr ""
+
+#: announcement/models.py:13
+msgid "已發佈"
+msgstr ""
+
+#: announcement/models.py:14
+msgid "已下架"
+msgstr ""
+
+#: announcement/models.py:23 checklist/models.py:29
+msgid "UUID"
+msgstr ""
+
+#: announcement/models.py:29 checklist/models.py:48 checklist/models.py:94
+msgid "生效起日"
+msgstr ""
+
+#: announcement/models.py:32 checklist/models.py:51 checklist/models.py:97
+msgid "生效迄日"
+msgstr ""
+
+#: announcement/models.py:35
+msgid "附件"
+msgstr ""
+
+#: announcement/models.py:41 checklist/models.py:42
+msgid "狀態"
+msgstr ""
+
+#: announcement/models.py:45 checklist/models.py:53
+msgid "建立時間"
+msgstr ""
+
+#: announcement/models.py:46 checklist/models.py:54 checklist/models.py:99
+msgid "最後更新時間"
+msgstr ""
+
+#: announcement/models.py:49 checklist/models.py:56 checklist/models.py:101
+msgid "最後更新者"
+msgstr ""
+
+#: announcement/tables.py:19 checklist/filters.py:94
+msgid "日期"
+msgstr ""
+
+#: announcement/tables.py:62 announcement/tables.py:118
+msgid "找不到公告"
+msgstr ""
+
+#: announcement/tables.py:91
+msgid "操作"
+msgstr ""
+
+#: branch/forms.py:7 checklist/filters.py:64
+msgid "所有門市"
+msgstr ""
+
+#: branch/forms.py:18
+msgid "不能同時選擇所有門市與其他門市"
+msgstr ""
+
+#: checklist/admin.py:23 checklist/models.py:89
+msgid "優先度"
+msgstr ""
+
+#: checklist/filters.py:23
+msgid "請選擇一間門市"
+msgstr ""
+
+#: checklist/filters.py:36 checklist/filters.py:172
+msgid "篩選"
+msgstr ""
+
+#: checklist/filters.py:79
+msgid "類別"
+msgstr ""
+
+#: checklist/filters.py:102 checklist/models.py:20
+msgid "未完成"
+msgstr ""
+
+#: checklist/filters.py:103 checklist/models.py:19
+msgid "已完成"
+msgstr ""
+
+#: checklist/filters.py:107
+msgid "全部"
+msgstr ""
+
+#: checklist/filters.py:175
+msgid "匯出"
+msgstr ""
+
+#: checklist/forms.py:31 checklist/forms.py:136
+msgid "種類"
+msgstr ""
+
+#: checklist/forms.py:124
+msgid "新增"
+msgstr ""
+
+#: checklist/forms.py:126 checklist/forms.py:202
+msgid "取消"
+msgstr ""
+
+#: checklist/jobs/daily/archive_checklist.py:9
+msgid "封存待做清單"
+msgstr ""
+
+#: checklist/jobs/daily/generate_routine_checklist.py:10
+msgid "產生例行待做清單"
+msgstr ""
+
+#: checklist/models.py:13
+msgid "異常"
+msgstr ""
+
+#: checklist/models.py:14
+msgid "臨時"
+msgstr ""
+
+#: checklist/models.py:15
+msgid "例行"
+msgstr ""
+
+#: checklist/models.py:33
+msgid "待做清單模板 ID"
+msgstr ""
+
+#: checklist/models.py:46 checklist/models.py:87
+msgid "排序"
+msgstr ""
+
+#: checklist/models.py:62
+msgid "已封存"
+msgstr ""
+
+#: checklist/models.py:68 checklist/models.py:69
+msgid "待做清單"
+msgstr ""
+
+#: checklist/models.py:112 checklist/models.py:113
+msgid "待做清單模板"
+msgstr ""
+
+#: checklist/tables.py:23
+msgid "沒有可顯示的待做項目"
+msgstr ""
+
+#: core/forms.py:16
+msgid "使用者名稱"
+msgstr ""
+
+#: core/forms.py:17
+msgid "密碼"
+msgstr ""
+
+#: core/forms.py:24
+msgid "登入"
+msgstr ""
+
+#: core/forms.py:36
+msgid "檔案名稱。留空則使用檔案原始名稱"
+msgstr ""
+
+#: core/forms.py:63
+msgid "檔案在伺服器中已存在。檔案名稱：{existed_file.first().name}。"
+msgstr ""
+
+#: core/models.py:28
+msgid "名稱"
+msgstr ""
+
+#: core/models.py:30
+msgid "雜湊"
+msgstr ""
+
+#: core/models.py:32 core/models.py:51 core/models.py:52
+msgid "檔案"
+msgstr ""
+
+#: core/models.py:33
+msgid "副檔名"
+msgstr ""
+
+#: core/models.py:35
+msgid "創建時間"
+msgstr ""
+
+#: django_tables2/bootstrap.html:66 django_tables2/bootstrap4.html:66
+#: django_tables2/bootstrap5.html:66 django_tables2/table.html:64
+msgid "previous"
+msgstr "上一頁"
+
+#: django_tables2/bootstrap.html:91 django_tables2/bootstrap4.html:86
+#: django_tables2/bootstrap5.html:86 django_tables2/table.html:88
+msgid "next"
+msgstr "下一頁"

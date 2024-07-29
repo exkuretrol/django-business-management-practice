@@ -4,21 +4,22 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.views.generic import TemplateView
 
+from core import views as core_views
+
 from .api import api
-from .views import ExternalLinkView, NewLoginView, download_file, update_file
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="home.html"), name="home"),
+    path("", core_views.home, name="home"),
     path(
         "redirect/",
-        ExternalLinkView.as_view(),
+        core_views.ExternalLinkView.as_view(),
         name="external_link",
     ),
     path("api/", api.urls),
-    path("accounts/login/", NewLoginView.as_view(), name="login"),
+    path("accounts/login/", core_views.NewLoginView.as_view(), name="login"),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
-    path("file/", update_file, name="upload_file"),
-    path("file/<uuid:file_id>/", download_file, name="download_file"),
+    path("file/", core_views.update_file, name="upload_file"),
+    path("file/<uuid:file_id>/", core_views.download_file, name="download_file"),
 ]
 
 if settings.DEBUG:

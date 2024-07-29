@@ -1,7 +1,8 @@
-from dal import autocomplete
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, HttpRequest, JsonResponse
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from .forms import FileUploadForm, LoginForm
@@ -10,6 +11,15 @@ from .models import File
 
 class NewLoginView(LoginView):
     form_class = LoginForm
+
+
+@login_required()
+def home(request: HttpRequest):
+    user = request.user
+    if user.is_branch():
+        return redirect("announcement:list")
+    else:
+        return redirect("announcement:branchs_list")
 
 
 class ExternalLinkView(TemplateView):

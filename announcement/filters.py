@@ -7,7 +7,11 @@ from django.utils.translation import gettext_lazy as _
 
 from branch.forms import get_all_branch_choices
 from branch.models import Branch
-from core.widgets import Bootstrap5TagsSelectMultiple, LitePickerDateInput
+from core.widgets import (
+    Bootstrap5TagsSelect,
+    Bootstrap5TagsSelectMultiple,
+    LitePickerDateInput,
+)
 
 from .forms import AnnouncementFilterForm
 from .models import Announcement, StatusChoices
@@ -35,7 +39,9 @@ class AnnouncementBranchsFilter(filters.FilterSet):
         label=_("結束日期"),
     )
     status = filters.ChoiceFilter(
-        choices=StatusChoices.choices, empty_label=_("不指定")
+        choices=StatusChoices.choices,
+        empty_label=_("不指定"),
+        widget=Bootstrap5TagsSelect,
     )
     branchs = filters.MultipleChoiceFilter(
         field_name="branchs",

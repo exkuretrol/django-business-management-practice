@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "branch",
     "announcement",
     "checklist",
+    "member",
 ]
 
 MIDDLEWARE = [
@@ -134,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "auth.User"
 
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"

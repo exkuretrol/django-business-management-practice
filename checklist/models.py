@@ -54,7 +54,7 @@ class Checklist(models.Model):
     last_modified = models.DateTimeField(verbose_name=_("最後更新時間"), auto_now=True)
     last_modified_by = models.ForeignKey(
         verbose_name=_("最後更新者"),
-        to="core.User",
+        to="auth.User",
         on_delete=models.SET_NULL,
         null=True,
         editable=False,
@@ -99,7 +99,7 @@ class ChecklistTemplate(models.Model):
     last_modified = models.DateTimeField(verbose_name=_("最後更新時間"), auto_now=True)
     last_modified_by = models.ForeignKey(
         verbose_name=_("最後更新者"),
-        to="core.User",
+        to="auth.User",
         on_delete=models.SET_NULL,
         null=True,
         editable=False,

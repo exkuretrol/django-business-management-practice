@@ -21,7 +21,7 @@ class Announcement(models.Model):
     uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, verbose_name=_("UUID")
     )
-    author = models.ForeignKey("core.User", on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey("auth.User", on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100, verbose_name=_("標題"))
     content = QuillField(verbose_name=_("內容"))
     effective_start_date = models.DateField(
@@ -46,7 +46,7 @@ class Announcement(models.Model):
     last_modified_by = models.ForeignKey(
         related_name="last_modified_announcements",
         verbose_name=_("最後更新者"),
-        to="core.User",
+        to="auth.User",
         on_delete=models.SET_NULL,
         null=True,
         editable=False,

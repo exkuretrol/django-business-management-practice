@@ -222,6 +222,7 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
             priority=F("template_id__priority"),
             content=F("template_id__content"),
             last_modified_date=F("last_modified"),
+            is_done=F("status"),
         ).order_by("branch_no", "priority")
         from itertools import groupby
         from operator import itemgetter
@@ -233,7 +234,9 @@ class ChecklistExportView(LoginRequiredMixin, FilterView):
         ]
 
         context = self.get_context_data(
-            filter=self.filterset, object_list=self.object_list
+            filter=self.filterset,
+            object_list=self.object_list,
+            not_paginated_object_list=self.object_list,
         )
 
         return self.render_to_response(context)

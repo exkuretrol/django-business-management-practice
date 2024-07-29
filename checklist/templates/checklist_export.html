@@ -32,7 +32,7 @@
                                         </td>
                                         <td>{{ checkitem.content }}</td>
                                         <td>
-                                            {% if checkitem.status %}
+                                            {% if checkitem.is_done %}
                                                 <span class="badge rounded-pill bg-success">已完成</span>
                                             {% else %}
                                                 <span class="badge rounded-pill bg-danger">未完成</span>

@@ -1,3 +1,3 @@
 "工作日期","門市","作業分類","狀態","內容"
-{% for group in filter.qs %}{% for branch, checklist in group.items %}{% for checkitem in checklist %}"{{ checkitem.last_modified_date|date:"Y-m-d" }}","{{ checkitem.branch_name }}","{% if checkitem.priority == 1 %}異常提醒{% elif checkitem.priority == 2 %}臨時作業{% elif checkitem.priority == 3 %}例行作業{% endif %}","{{ checkitem.content }}","{% if checkitem.status %}完成{% else %}未完成{% endif %}"
+{% for group in not_paginated_object_list %}{% for branch, checklist in group.items %}{% for checkitem in checklist %}"{{ checkitem.last_modified_date|date:"Y-m-d" }}","{{ checkitem.branch_name }}","{% if checkitem.priority == 1 %}異常提醒{% elif checkitem.priority == 2 %}臨時作業{% elif checkitem.priority == 3 %}例行作業{% endif %}","{{ checkitem.content }}","{% if checkitem.is_done %}完成{% else %}未完成{% endif %}"
 {% endfor %}{% endfor %}{% endfor %}

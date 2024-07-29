@@ -10,12 +10,25 @@ module.exports = (env, argv) => {
     const dev_mode = mode === "development";
 
     const config = {
-        entry: "./assets/src/js/index.js",
+        entry: {
+            main: {
+                import: "./assets/src/js/index.js",
+                dependOn: "shared",
+            },
+            shared: {
+                import: "./assets/src/js/nifty.js",
+            },
+        },
         output: {
             filename: "[name]-[contenthash].js",
             path: path.resolve(__dirname, "assets", "webpack_bundles"),
             publicPath: "auto",
             clean: true,
+        },
+        optimization: {
+            splitChunks: {
+                chunks: "all",
+            },
         },
         plugins: [
             new webpack.ProvidePlugin({

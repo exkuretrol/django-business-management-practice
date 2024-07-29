@@ -40,3 +40,6 @@ assets/webpack_bundles
 
 # webpack stats
 webpack-stats.json
+
+# fixtures
+fixtures

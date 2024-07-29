@@ -9,12 +9,7 @@
                 <h4 class="card-header">與公告關聯的附件</h4>
             </div>
             <div class="card-body">
-                <div id="formset">
-                    {% comment %} {% for formset_form in form.attachment_formset %}
-                        {% crispy formset_form formset_form.helper %}
-                    {% endfor %} {% endcomment %}
-                    {% crispy form.attachment_formset formset_helper %}
-                </div>
+                <div id="formset">{% crispy form.attachment_formset formset_helper %}</div>
             </div>
             <div class="card-footer d-flex gap-2">
                 <button type="button" class="btn btn-primary" id="add_attachment">新增附件</button>
@@ -52,7 +47,6 @@
     </div>
 {% endblock content %}
 {% block head %}
-    {% include "includes/media/quill.html" %}
     {% include "includes/head/announcement_create.html" %}
 {% endblock head %}
 {% block header %}

@@ -2,12 +2,11 @@ from typing import Any
 
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
+from django_quill.widgets import QuillWidget
 
 
 class LazyEncoder(DjangoJSONEncoder):
     def default(self, obj):
-        # if isinstance(obj, CustomType):
-        #     return str(obj)
         return super().default(obj)
 
 
@@ -52,3 +51,19 @@ class Bootstrap5TagsSelect(forms.Select):
         context = super().get_context(*args, **kwargs)
         context["widget"]["tags"] = json_encorder(self.config)
         return context
+
+
+class MyQuillWidget(QuillWidget):
+    @property
+    def media(self):
+        js = [
+            # quill
+            "https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js",
+            # custom
+            "js/quill/quill.js",
+            "js/quill/django_quill.js",
+        ]
+        css = {
+            # build from scss
+        }
+        return forms.Media(js=js, css=css)

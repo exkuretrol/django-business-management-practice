@@ -16,7 +16,11 @@ from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 
 from branch.forms import CleanBranchsMixin, get_all_branch_choices
-from core.widgets import Bootstrap5TagsSelectMultiple, LitePickerDateInput
+from core.widgets import (
+    Bootstrap5TagsSelectMultiple,
+    LitePickerDateInput,
+    MyQuillWidget,
+)
 
 from .models import Announcement
 
@@ -125,6 +129,7 @@ class AnnouncementCreateForm(
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["content"].widget = MyQuillWidget()
         FormSet = inlineformset_factory(
             Announcement,
             Announcement.attachments.through,
@@ -140,7 +145,6 @@ class AnnouncementCreateForm(
         )
 
         helper = FormHelper()
-        helper.include_media = False
         helper.form_tag = False
         helper.disable_csrf = True
         helper.layout = Layout(

@@ -1,12 +1,10 @@
-import Quill from "quill/core";
+const Link = Quill.import("formats/link");
+const Toolbar = Quill.import("modules/toolbar");
+const Snow = Quill.import("themes/snow");
+const Bold = Quill.import("formats/bold");
+const Italic = Quill.import("formats/italic");
+const Underline = Quill.import("formats/underline");
 
-import Toolbar from "quill/modules/toolbar";
-import Snow from "quill/themes/snow";
-
-import Bold from "quill/formats/bold";
-import Italic from "quill/formats/italic";
-import Underline from "quill/formats/underline";
-import Link from "quill/formats/link";
 class MyLink extends Link {
     static PROTOCOL_WHITELIST = ["http", "https"];
     static create(value) {
@@ -31,13 +29,17 @@ class MyLink extends Link {
     }
 }
 
-Quill.register({
-    "modules/toolbar": Toolbar,
-    "themes/snow": Snow,
-    "formats/bold": Bold,
-    "formats/italic": Italic,
-    "formats/underline": Underline,
-    "formats/link": MyLink,
-});
+Quill.register(
+    {
+        "modules/toolbar": Toolbar,
+        "themes/snow": Snow,
+        "formats/bold": Bold,
+        "formats/italic": Italic,
+        "formats/underline": Underline,
+        "formats/link": MyLink,
+    },
+    // suppress log
+    true
+);
 
-export default Quill;
+Quill.debug("error");

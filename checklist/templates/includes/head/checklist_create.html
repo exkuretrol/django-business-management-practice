@@ -5,9 +5,11 @@
 
         let start_date_picker = new Litepicker({
             element:document.getElementById("id_effective_start_date"),
+            lang: "zh-TW"
         })
         let end_date_picker = new Litepicker({
             element:document.getElementById("id_effective_end_date"),
+            lang: "zh-TW"
         })
         
         toggle_data_picker($("input[type=radio]:checked").val())

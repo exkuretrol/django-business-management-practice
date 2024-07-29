@@ -20,6 +20,7 @@ class LitePickerDateInput(forms.DateInput):
     def __init__(self, attrs=None, config=None, format=None):
         super().__init__(attrs=attrs, format=format)
         self.config = config or {}
+        self.config.update({"lang": "zh-TW"})
 
     def get_context(self, *args, **kwargs):
         context = super().get_context(*args, **kwargs)

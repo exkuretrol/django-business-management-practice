@@ -50,3 +50,4 @@ class File(models.Model):
     class Meta:
         verbose_name = _("檔案")
         verbose_name_plural = _("檔案")
+        ordering = ["-create_datetime"]

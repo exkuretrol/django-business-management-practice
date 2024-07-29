@@ -108,6 +108,7 @@ $(() => {
     end_date_el = document.getElementById("id_effective_end_date");
     let end_date_picker = new Litepicker({
         element: end_date_el,
+        lang: "zh-TW",
     });
 
     end_date_picker.setDate("9999-12-31");

@@ -17,7 +17,9 @@
                 <tr>
                     {% for field in formset.forms.0 %}
                         {% if field.label and not field.is_hidden %}
-                            {% if field.label != "Delete" %}
+                            {% comment %} TODO: find a better way to achieve this {% endcomment %}
+                            {% if field.label == "Delete" or field.label == "刪除" %}
+                            {% else %}
                                 <th for="{{ field.auto_id }}"
                                     class="{% if field.field.required %}requiredField{% endif %}">
                                     {{ field.label }}
@@ -37,7 +39,9 @@
                 <tr {% if form.initial %}class="has_original"{% endif %}
                     id="{{ formset.prefix }}-{{ forloop.counter0 }}">
                     {% for field in form %}
-                        {% if field.label != "Delete" %}
+                        {% if field.label == "Delete" or field.label == "刪除" %}
+                            <td class="d-none">{% include "bootstrap5/field.html" with form_show_labels=False %}</td>
+                        {% else %}
                             {% include "bootstrap5/field.html" with tag="td" form_show_labels=False %}
                         {% endif %}
                         {% if forloop.last %}<td class="text-center align-middle"></td>{% endif %}
@@ -46,7 +50,9 @@
             {% endfor %}
             <tr id="{{ formset.prefix }}-empty" class="d-none empty-form">
                 {% for field in formset.empty_form %}
-                    {% if field.label != "Delete" %}
+                    {% if field.label == "Delete" or field.label == "刪除" %}
+                        <td class="d-none">{% include "bootstrap5/field.html" with form_show_labels=False %}</td>
+                    {% else %}
                         {% include "bootstrap5/field.html" with tag="td" form_show_labels=False %}
                     {% endif %}
                     {% if forloop.last %}<td class="text-center align-middle"></td>{% endif %}

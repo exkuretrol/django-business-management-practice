@@ -56,7 +56,6 @@
     </div>
 {% endblock content %}
 {% block head %}
-    {% include "includes/media/quill.html" %}
     {% include "includes/head/announcement_create.html" %}
 {% endblock head %}
 {% block header %}
@@ -73,7 +72,7 @@
                 <a href="{% url 'announcement:index' %}">公告欄管理</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{% url 'announcement:list' %}">總部查看公告欄</a>
+                <a href="{% url 'announcement:branchs_list' %}">總部查看公告欄</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
                 {{ announcement.effective_start_date }} {{ announcement.title }}

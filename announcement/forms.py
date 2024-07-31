@@ -243,6 +243,7 @@ class AnnouncementUpdateForm(
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["content"].widget = MyQuillWidget()
         FormSet = inlineformset_factory(
             Announcement,
             Announcement.attachments.through,
@@ -257,7 +258,6 @@ class AnnouncementUpdateForm(
             data=kwargs.get("data"), instance=self.instance
         )
         helper = FormHelper()
-        helper.include_media = False
         helper.form_tag = False
         helper.disable_csrf = True
 
@@ -289,7 +289,7 @@ class AnnouncementUpdateForm(
                     "content",
                     Hidden("status", value="0"),
                     Div(
-                        Submit("publish", _("更新"), css_class="btn btn-primary"),
+                        Submit("publish", _("更新並發佈"), css_class="btn btn-primary"),
                         Button("draft", _("存為草稿"), css_class="btn btn-light"),
                         css_class="d-flex justify-content-between",
                     ),

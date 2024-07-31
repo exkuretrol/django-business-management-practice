@@ -16,10 +16,11 @@ class NewLoginView(LoginView):
 @login_required()
 def home(request: HttpRequest):
     user = request.user
-    if user.is_branch():
-        return redirect("announcement:list")
-    else:
+    # TODO: implement later
+    if True:
         return redirect("announcement:branchs_list")
+    else:
+        return redirect("announcement:list")
 
 
 class ExternalLinkView(TemplateView):

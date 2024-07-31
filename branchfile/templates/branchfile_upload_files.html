@@ -1,0 +1,42 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="row gap-4 mb-4">
+        <div class="col card">
+            <div class="card-body">{% crispy form_a form_a.helper %}</div>
+        </div>
+        <div class="col card">
+            <div class="card-body">{% crispy form_b form_b.helper %}</div>
+        </div>
+    </div>
+    <div class="row gap-4 mb-4">
+        <div class="col card">
+            <div class="card-body">{% crispy form_c form_c.helper %}</div>
+        </div>
+        <div class="col card">
+            <div class="card-body">{% crispy form_d form_d.helper %}</div>
+        </div>
+    </div>
+    <div class="row gap-4">
+        <div class="col card">
+            <div class="card-body">{% crispy form_e form_e.helper %}</div>
+        </div>
+    </div>
+{% endblock content %}
+{% block header %}
+    <h1 class="page-title mb-1 mt-2">門市上傳相關檔案</h1>
+    <p class="lead">用於上傳健保申報總表、付款通知書、扣繳憑單、實付金額明細表與分列項目表。</p>
+{% endblock header %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'branchfile:home' %}">上傳檔案</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">門市相關檔案上傳</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

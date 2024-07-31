@@ -1,0 +1,24 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% endblock content %}
+{% block head %}
+    {% include "includes/head/announcement_create.html" %}
+{% endblock head %}
+{% block header %}
+    <h1 class="page-title mb-1 mt-2">總部查看門市上傳檔案</h1>
+    <p class="lead">根據門市、申報年月查看門市上傳的所有檔案。</p>
+{% endblock header %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'branchfile:home' %}">上傳檔案</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">總部查看門市上傳檔案</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

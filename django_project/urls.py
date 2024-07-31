@@ -25,4 +25,5 @@ urlpatterns = [
     path("", include("core.urls")),
     path("announcement/", include("announcement.urls")),
     path("checklist/", include("checklist.urls")),
+    path("branchfile/", include("branchfile.urls")),
 ]

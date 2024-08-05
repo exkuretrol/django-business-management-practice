@@ -11,6 +11,11 @@ def hash_file_name(instance, filename):
     return f"attachments/{uuid.uuid4().hex}"
 
 
+class SourceChoices(models.IntegerChoices):
+    ANNOUNCEMENT = 1, _("公告")
+    BRANCH_FILE = 2, _("門市檔案")
+
+
 class File(models.Model):
     """
     系統的檔案。被使用於 :model:`announcement.Announcement`。
@@ -25,6 +30,12 @@ class File(models.Model):
     extension = models.CharField(max_length=16, verbose_name=_("副檔名"), null=True)
     create_datetime = models.DateTimeField(
         default=timezone.now, verbose_name=_("創建時間")
+    )
+    source = models.PositiveSmallIntegerField(
+        choices=SourceChoices.choices,
+        verbose_name=_("來源"),
+        null=False,
+        default=SourceChoices.ANNOUNCEMENT,
     )
 
     def save(self, *args, **kwargs):

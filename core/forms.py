@@ -4,6 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Hidden, Layout, Submit
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from .models import File
@@ -28,7 +29,31 @@ class LoginForm(AuthenticationForm):
         self.helper = helper
 
 
-class FileUploadForm(forms.ModelForm):
+class FileCleanMixin:
+    def clean(self):
+        cleaned_data = super().clean()
+
+        file = cleaned_data.get("file", None)
+        sha256_hash = hashlib.sha256()
+
+        f = file.open("rb")
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+
+        existed_file = File.objects.filter(hash=sha256_hash.hexdigest())
+
+        if existed_file.exists():
+            self.add_error(
+                "file",
+                _(
+                    f"檔案已存在。檔案名稱：{existed_file.first().name}。上傳時間：{timezone.localtime(existed_file.first().create_datetime):%Y-%m-%d %H:%M:%S}"
+                ),
+            )
+            f.close()
+        return cleaned_data
+
+
+class FileUploadForm(FileCleanMixin, forms.ModelForm):
     class Meta:
         model = File
         fields = ["name", "file", "extension"]
@@ -47,29 +72,16 @@ class FileUploadForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-
         file = cleaned_data.get("file", None)
-        sha256_hash = hashlib.sha256()
-
-        f = file.open("rb")
-        for byte_block in iter(lambda: f.read(4096), b""):
-            sha256_hash.update(byte_block)
-
-        existed_file = File.objects.filter(hash=sha256_hash.hexdigest())
-
-        if existed_file.exists():
-            self.add_error(
-                "file",
-                _(f"檔案在伺服器中已存在。檔案名稱：{existed_file.first().name}。"),
-            )
-            f.close()
+        if file is None:
+            self.add_error("file", _("請選擇檔案"))
 
         if "." not in file.name:
             cleaned_data["extension"] = None
         else:
             cleaned_data["extension"] = file.name.rsplit(".", 1)[1]
 
-        if cleaned_data.get("name") == "":
+        if cleaned_data.get("name") == "" or cleaned_data.get("name") is None:
             cleaned_data["name"] = file.name.rsplit(".", 1)[0]
 
         return cleaned_data

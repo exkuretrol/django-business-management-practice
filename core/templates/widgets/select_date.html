@@ -1,0 +1,9 @@
+{% for widget in widget.subwidgets %}
+    {% if forloop.first %}<div class="row row-gap-2">{% endif %}
+        {% if widget.is_hidden %}
+            {% include widget.template_name %}
+        {% else %}
+            <div class="col-xl-6 col-12">{% include widget.template_name %}</div>
+        {% endif %}
+        {% if forloop.last %}</div>{% endif %}
+{% endfor %}

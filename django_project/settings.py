@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "announcement",
     "checklist",
     "member",
+    "branchfile",
 ]
 
 MIDDLEWARE = [

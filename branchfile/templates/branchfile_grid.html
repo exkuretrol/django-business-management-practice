@@ -1,0 +1,41 @@
+{% extends "_base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="card-title">
+                        <a class="h5 btn-link" href="{% url 'branchfile:upload_files' %}">門市上傳相關檔案</a>
+                    </div>
+                    <p class="text-body-secondary">用於上傳健保申報總表、付款通知書、扣繳憑單、實付金額明細表與分列項目表。</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'branchfile:upload_files' %}" class="btn-link">顯示更多 ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="card-title">
+                        <a class="h5 btn-link" href="{% url 'branchfile:branchs_list' %}">總部查看門市上傳檔案</a>
+                    </div>
+                    <p class="text-body-secondary">根據門市、申報年月查看門市上傳的所有檔案。</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'branchfile:branchs_list' %}" class="btn-link">顯示更多 ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">檔案上傳管理</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

@@ -6,5 +6,6 @@ from .models import File
 
 @admin.register(File)
 class FileAdmin(admin.ModelAdmin):
-    list_display = ("name", "file", "extension", "hash", "create_datetime")
+    list_display = ["name", "file", "extension", "hash", "create_datetime", "source"]
+    list_filter = ["source"]
     form = FileUploadForm

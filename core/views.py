@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
-from django.http import FileResponse, HttpRequest, JsonResponse
+from django.http import FileResponse, HttpRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+
+from member.models import Member, Organization
 
 from .forms import FileUploadForm, LoginForm
 from .models import File
@@ -16,8 +18,11 @@ class NewLoginView(LoginView):
 @login_required()
 def home(request: HttpRequest):
     user = request.user
-    # TODO: implement later
-    if True:
+
+    branch = Member.objects.filter(user=user).first().org
+    if branch.is_store:
+        return redirect("announcement:list")
+    else:
         return redirect("announcement:branchs_list")
     else:
         return redirect("announcement:list")

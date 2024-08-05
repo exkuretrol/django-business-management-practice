@@ -12,6 +12,7 @@ makemigrations:
 	@python manage.py makemigrations announcement
 	@python manage.py makemigrations checklist
 	@python manage.py makemigrations member
+	@python manage.py makemigrations branchfile
 
 migrate:
 	@python manage.py migrate

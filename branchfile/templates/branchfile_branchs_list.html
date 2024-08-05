@@ -1,6 +1,27 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
+{% load render_table from django_tables2 %}
 {% block content %}
+    <div class="card mb-4">
+        <div class="card-body">{% crispy filter.form filter.form.helper %}</div>
+    </div>
+    {% if filter.qs %}
+        <div class="card">
+            <div class="card-header d-flex">
+                <a href="{% url 'branchfile:download_export_zip' %}"
+                   class="ms-auto btn btn-outline-light">
+                    <i class="pli-folder-download fs-5 me-2"></i> 全部下載
+                </a>
+            </div>
+            <div class="card-body">{% render_table branchs_table %}</div>
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <p class="h4">請選擇至少一個門市。</p>
+            </div>
+        </div>
+    {% endif %}
 {% endblock content %}
 {% block head %}
     {% include "includes/head/announcement_create.html" %}

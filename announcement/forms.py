@@ -12,10 +12,11 @@ from crispy_forms.layout import (
 )
 from django import forms
 from django.db import transaction
-from django.forms import inlineformset_factory
+from django.forms import BaseInlineFormSet, inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 
 from branch.forms import CleanBranchsMixin, get_all_branch_choices
+from core.models import File, SourceChoices
 from core.widgets import (
     Bootstrap5TagsSelectMultiple,
     LitePickerDateInput,
@@ -80,6 +81,11 @@ class AnnouncementAttachmentForm(forms.ModelForm):
             "file": _("附件"),
         }
 
+    def save(self, commit=True):
+        f = super().save(commit=False)
+        f.source = SourceChoices.ANNOUNCEMENT
+        f.save()
+
 
 class FormsetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
@@ -89,14 +95,14 @@ class FormsetHelper(FormHelper):
         self.template = "bootstrap5/file_formset.html"
 
 
-AttachmentFormSet = inlineformset_factory(
-    Announcement,
-    Announcement.attachments.through,
-    form=AnnouncementAttachmentForm,
-    extra=1,
-    can_delete=False,
-    max_num=5,
-)
+class AttachmentFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for form in self.forms:
+            form.fields.get("file").queryset = File.objects.filter(
+                source=SourceChoices.ANNOUNCEMENT
+            )
 
 
 class AnnouncementCreateForm(
@@ -134,14 +140,16 @@ class AnnouncementCreateForm(
             Announcement,
             Announcement.attachments.through,
             form=AnnouncementAttachmentForm,
+            formset=AttachmentFormSet,
             extra=1,
-            # create form should not delete attachment
+            # create form should not appear delete checkbox
             can_delete=False,
             max_num=5,
         )
 
         self.attachment_formset = FormSet(
-            data=kwargs.get("data"), instance=self.instance
+            data=kwargs.get("data"),
+            instance=self.instance,
         )
 
         helper = FormHelper()
@@ -247,6 +255,7 @@ class AnnouncementUpdateForm(
             Announcement,
             Announcement.attachments.through,
             form=AnnouncementAttachmentForm,
+            formset=AttachmentFormSet,
             extra=1,
             # update form should delete attachment
             can_delete=True,

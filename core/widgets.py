@@ -71,7 +71,7 @@ class MyQuillWidget(QuillWidget):
 
 
 class YearMonthWidget(SelectDateWidget):
-    # select_widget = Bootstrap5TagsSelect
+    select_widget = Bootstrap5TagsSelect
     use_fieldset = False
     template_name = "widgets/select_date.html"
 

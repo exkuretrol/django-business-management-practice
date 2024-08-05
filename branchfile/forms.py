@@ -1,12 +1,13 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import HTML, Hidden, Layout, Submit
+from crispy_forms.layout import HTML, Layout, Submit
 from django import forms
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from core.forms import FileCleanMixin
-from core.models import File
+from core.models import File, SourceChoices
 from core.widgets import YearMonthWidget
+from member.models import Member, Organization
 
 from .models import BranchFile, BranchFileTypeChoices
 
@@ -28,7 +29,7 @@ class BranchFileUploadFileBaseForm(FileCleanMixin, forms.ModelForm):
     declaration_date = forms.DateField(
         label=_("申報年月"),
         widget=YearMonthWidget(years=get_year_choices()),
-        initial=timezone.now() - timezone.timedelta(weeks=5),
+        initial=timezone.now() - timezone.timedelta(weeks=4),
     )
 
     class Meta:
@@ -77,21 +78,32 @@ class BranchFileUploadFileBaseForm(FileCleanMixin, forms.ModelForm):
         f = super().save(commit=False)
         type_label = BranchFileTypeChoices(int(self.cleaned_data["type"])).label
 
-        # TODO: replace with user branch
-        branch_label = "台大門市" if user is None else user
+        branch = user.member_set.first().org
+
+        if branch is None:
+            raise ValueError(_("使用者沒有所屬門市"))
+
+        branch_label = branch.short_name
+        f_original_name = f.name + "." + f.extension if f.extension else f.name
         f.name = f"{type_label}_{branch_label}_{self.cleaned_data['declaration_date'].strftime('%Y%m')}"
+        f.source = SourceChoices.BRANCH_FILE
         f.save()
 
+        previous_latest = BranchFile.objects.filter(
+            branch=branch, type=self.cleaned_data["type"], is_latest=True
+        )
+
+        if previous_latest.exists():
+            previous_latest.update(is_latest=False)
+
         bf = BranchFile(
+            original_filename=f_original_name,
             attachment=f,
             type=self.cleaned_data["type"],
             declaration_date=self.cleaned_data["declaration_date"],
-            nth_upload=BranchFile.objects.filter(
-                type=self.cleaned_data["type"],
-                declaration_date=self.cleaned_data["declaration_date"],
-            ).count()
-            + 1,
+            branch=branch,
         )
+
         bf.save()
         return f
 
@@ -136,3 +148,18 @@ class BreakdownOfItemsTableForm(BranchFileUploadFileBaseForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial["type"] = BranchFileTypeChoices.BREAKDOWN_OF_ITEMS_TABLE
+
+
+class BranchsCleanMixin:
+    def clean_branchs(self):
+        branchs = self.cleaned_data["branchs"]
+        if "00000000-0000-0000-0000-000000000000" in branchs:
+            if len(branchs) > 1:
+                self.add_error("branchs", _("不能同時選擇所有門市與其他門市"))
+            return Organization.objects.filter(is_store=True)
+        branchs = Organization.objects.filter(pk__in=branchs)
+        return branchs
+
+
+class BranchFileFilterForm(BranchsCleanMixin, forms.Form):
+    pass

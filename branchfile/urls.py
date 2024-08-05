@@ -15,4 +15,14 @@ urlpatterns = [
         views.BranchFileBranchsListView.as_view(),
         name="branchs_list",
     ),
+    path(
+        "branchs_list/download/",
+        views.download_export_zip,
+        name="download_export_zip",
+    ),
+    path(
+        "delete/<uuid:pk>/",
+        views.BranchFileDeleteView.as_view(),
+        name="delete",
+    ),
 ]

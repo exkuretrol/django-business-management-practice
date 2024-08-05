@@ -3,6 +3,7 @@ from typing import Any, List, Literal, Optional
 from ninja import File, NinjaAPI, Schema
 
 from announcement.models import Announcement, StatusChoices
+from branchfile.models import BranchFile
 from checklist.models import Checklist
 
 api = NinjaAPI(urls_namespace="api")

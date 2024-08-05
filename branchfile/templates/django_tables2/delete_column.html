@@ -1,0 +1,6 @@
+{% if record.attachment %}
+    <a href="{% url "branchfile:delete" record.attachment.pk %}"
+       class="btn btn-outline-primary">
+        <i class="pli-trash fs-5"></i>
+    </a>
+{% endif %}

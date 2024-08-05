@@ -1,0 +1,55 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">
+                <p class="text-center h4 mb-5">
+                    是否要刪除附件「<span class="text-danger">{{ file }}
+                    {% if file.extension %}.{{ file.extension }}{% endif %}
+                </span>」？
+            </p>
+        </div>
+        <div class="d-flex justify-content-center gap-3">
+            <button type="button"
+                    onclick="window.history.back()"
+                    class="btn btn-light gap-2">
+                <i class="psi-left-4 fs-5 opacity-30"></i>
+                返回上一頁
+            </button>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="button"
+                        onclick="$(this).closest('form').submit();"
+                        class="btn btn-danger gap-2">
+                    <i class="psi-trash fs-5"></i>
+                    刪除
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block header %}
+    <h1 class="page-title mb-1 mt-2">刪除附件</h1>
+    <p class="lead">刪除一個已存在的附件。</p>
+{% endblock header %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">首頁</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'branchfile:home' %}">上傳檔案</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'branchfile:upload_files' %}">門市相關檔案上傳</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ announcement.effective_start_date }} {{ announcement.title }}
+            </li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}

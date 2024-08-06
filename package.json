@@ -28,6 +28,7 @@
         "webpack-cli": "^5.1.4"
     },
     "dependencies": {
+        "@yaireo/tagify": "^4.27.0",
         "quill": "^2.0.2"
     }
 }

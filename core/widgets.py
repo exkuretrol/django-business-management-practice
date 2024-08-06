@@ -1,9 +1,42 @@
-from typing import Any
+from collections.abc import Iterable
+from typing import Any, Mapping
 
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.forms.widgets import HiddenInput, SelectDateWidget
+from django_filters import MultipleChoiceFilter
 from django_quill.widgets import QuillWidget
+
+
+class Tagify(forms.SelectMultiple):
+    template_name = "tagify/widget.html"
+
+    def __init__(self, attrs=None, config=None):
+        super().__init__(attrs=attrs)
+        self.config = config or {}
+
+    def get_context(self, *args, **kwargs):
+        context = super().get_context(*args, **kwargs)
+        context["widget"]["tagify"] = json_encorder(self.config)
+        # TODO: remove form-select class, because I dunno why it cause
+        # tags height changed
+        context["widget"]["attrs"]["class"] = context["widget"]["attrs"][
+            "class"
+        ].replace("form-select", "")
+        return context
+
+    def value_from_datadict(self, data, files, name):
+        getter = data.get
+        options = getter(name)
+        return options.split(",") if options else []
+
+
+class TagifyMultipleChoiceField(forms.MultipleChoiceField):
+    widget = Tagify
+
+
+class TagifyMultipleChoiceFilter(MultipleChoiceFilter):
+    field_class = TagifyMultipleChoiceField
 
 
 class LazyEncoder(DjangoJSONEncoder):

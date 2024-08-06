@@ -1,0 +1,59 @@
+<input name="{{ widget.name }}"
+       {% include "django/forms/widgets/attrs.html" %} />
+<script>
+    (function() {
+        const el = document.getElementById("id_{{ widget.name }}");
+        let config = {{ widget.tagify|safe }}
+        const options = [
+        {% for group_name, group_choices, group_index in widget.optgroups %}
+            {% for option in group_choices %}
+                {
+                    "label": "{{ option.label }}", 
+                    "value": "{{ option.value }}", 
+                    {% if option.selected %}"selected": true{% endif %}
+                },
+            {% endfor %}
+        {% endfor %}];
+        const selected_options = options.filter(option => option.selected).map(option => option.label);
+
+        config = Object.assign({}, config, {
+            delimiters: null,
+            enforceWhitelist: true,
+            whitelist: options,
+            skipInvalid: true,
+            templates : {
+                tag : function(tagData){
+                    try {
+                        return `
+                        <tag title="${tagData.label}" contenteditable="false" tabindex="-1" class="tagify__tag" value="${tagData.value}">
+                            <x title="" tabindex="-1" class="tagify__tag__removeBtn" role="button" aria-label="remove tag"></x>
+                            <div><span autocapitalize="false" autocorrect="off" spellcheck="false" class="tagify__tag-text">${tagData.label}</span></div>
+                        </tag>`
+                    }
+                    catch(err){}
+                },
+                dropdownItem : function(tagData){
+                    try {
+                        return `
+                        <div value="${tagData.value}" mappedvalue="${tagData.value}" class="tagify__dropdown__item" tabindex="0" role="option" aria-selected="true">${tagData.label}</div>
+                        `
+                    }
+                    catch (err) {}
+                }
+            },
+            dropdown: {
+                maxItems: 150,
+                enabled: 0,
+                classname: "tags-look",
+                closeOnSelect: false,
+                searchKeys: ['label'],
+            },
+            originalInputValueFormat: arr => arr.map(item => item.value)
+        });
+
+        const tagify = new Tagify(el, config);
+        // manually add selected options
+        tagify.addTags(selected_options);
+        
+    })();
+</script>

@@ -5,13 +5,14 @@ from django import forms
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from branch.forms import get_all_branch_choices
-from branch.models import Branch
+from core.forms import get_all_branch_choices
 from core.widgets import (
     Bootstrap5TagsSelect,
-    Bootstrap5TagsSelectMultiple,
     LitePickerDateInput,
+    Tagify,
+    TagifyMultipleChoiceFilter,
 )
+from member.models import Organization
 
 from .forms import AnnouncementFilterForm
 from .models import Announcement, StatusChoices
@@ -30,12 +31,12 @@ class AnnouncementBranchsFilter(filters.FilterSet):
     )
     effective_start_date = filters.DateFilter(
         lookup_expr="gte",
-        widget=LitePickerDateInput,
+        widget=LitePickerDateInput(attrs={"placeholder": "不指定起始日期"}),
         label=_("起始日期"),
     )
     effective_end_date = filters.DateFilter(
         lookup_expr="lte",
-        widget=LitePickerDateInput,
+        widget=LitePickerDateInput(attrs={"placeholder": "不指定結束日期"}),
         label=_("結束日期"),
     )
     status = filters.ChoiceFilter(
@@ -43,14 +44,12 @@ class AnnouncementBranchsFilter(filters.FilterSet):
         empty_label=_("不指定"),
         widget=Bootstrap5TagsSelect,
     )
-    branchs = filters.MultipleChoiceFilter(
+    branchs = TagifyMultipleChoiceFilter(
         field_name="branchs",
         label=_("門市"),
         choices=get_all_branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(
-            config={"allowClear": True, "placeholder": _("請選擇門市")}
-        ),
         required=False,
+        widget=Tagify(config={"placeholder": _("請選擇門市")}),
     )
 
     class Meta:
@@ -95,13 +94,13 @@ class AnnouncementFilter(filters.FilterSet):
 
     effective_start_date = filters.DateFilter(
         lookup_expr="gte",
-        widget=LitePickerDateInput,
+        widget=LitePickerDateInput(attrs={"placeholder": "不指定起始日期"}),
         label=_("起始日期"),
     )
 
     effective_end_date = filters.DateFilter(
         lookup_expr="lte",
-        widget=LitePickerDateInput,
+        widget=LitePickerDateInput(attrs={"placeholder": "不指定結束日期"}),
         label=_("結束日期"),
     )
 
@@ -132,8 +131,10 @@ class AnnouncementFilter(filters.FilterSet):
 
     @property
     def qs(self):
-        # TODO: replace with new branch filter
         return super().qs.filter(
             Q(status=StatusChoices.PUBLISHED)
-            & (Q(branchs__isnull=True) | Q(branchs__in=[Branch.objects.first()]))
+            & (
+                Q(branchs__isnull=True)
+                | Q(branchs__in=[self.request.user.member_set.first().org])
+            )
         )

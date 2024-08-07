@@ -34,7 +34,7 @@ class Checklist(models.Model):
         on_delete=models.CASCADE,
     )
     branch = models.ForeignKey(
-        to="branch.Branch",
+        to="member.Organization",
         verbose_name=_("門市"),
         on_delete=models.CASCADE,
     )
@@ -81,7 +81,7 @@ class ChecklistTemplate(models.Model):
     """
 
     branchs = models.ManyToManyField(
-        "branch.Branch", blank=True, verbose_name=_("門市")
+        "member.Organization", blank=True, verbose_name=_("門市")
     )
     content = models.TextField(verbose_name=_("內容"))
     order = models.IntegerField(verbose_name=_("排序"), default=0)

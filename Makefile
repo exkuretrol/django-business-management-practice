@@ -8,7 +8,6 @@ test:
 
 makemigrations:
 	@python manage.py makemigrations core
-	@python manage.py makemigrations branch
 	@python manage.py makemigrations announcement
 	@python manage.py makemigrations checklist
 	@python manage.py makemigrations member

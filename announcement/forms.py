@@ -13,15 +13,23 @@ from crispy_forms.layout import (
 from django import forms
 from django.db import transaction
 from django.forms import BaseInlineFormSet, inlineformset_factory
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from branch.forms import CleanBranchsMixin, get_all_branch_choices
+from core.forms import (
+    ALL_BRANCHS,
+    BranchsCleanMixin,
+    BranchsNoneCleanMixin,
+    get_all_branch_choices,
+)
 from core.models import File, SourceChoices
 from core.widgets import (
     Bootstrap5TagsSelectMultiple,
     LitePickerDateInput,
     MyQuillWidget,
+    Tagify,
 )
+from member.models import Organization
 
 from .models import Announcement
 
@@ -106,14 +114,12 @@ class AttachmentFormSet(BaseInlineFormSet):
 
 
 class AnnouncementCreateForm(
-    EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
+    EffectiveDateCleanMixin, BranchsNoneCleanMixin, forms.ModelForm
 ):
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(
-            config={"placeholder": "請選擇門市", "allowClear": True}
-        ),
+        widget=Tagify(config={"placeholder": _("請選擇門市")}),
     )
 
     class Meta:
@@ -131,6 +137,7 @@ class AnnouncementCreateForm(
             "branchs": Bootstrap5TagsSelectMultiple,
             "effective_start_date": LitePickerDateInput,
             "effective_end_date": forms.TextInput,
+            "title": forms.TextInput(attrs={"placeholder": _("請輸入公告標題")}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -222,14 +229,12 @@ class AnnouncementCreateForm(
 
 
 class AnnouncementUpdateForm(
-    EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
+    EffectiveDateCleanMixin, BranchsNoneCleanMixin, forms.ModelForm
 ):
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(
-            config={"placeholder": "請選擇門市", "allowClear": True}
-        ),
+        widget=Tagify(),
     )
 
     class Meta:
@@ -244,7 +249,6 @@ class AnnouncementUpdateForm(
         ]
 
         widgets = {
-            "branchs": Bootstrap5TagsSelectMultiple,
             "effective_start_date": LitePickerDateInput,
             "effective_end_date": forms.TextInput,
         }
@@ -252,6 +256,20 @@ class AnnouncementUpdateForm(
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["content"].widget = MyQuillWidget()
+
+        # convert branchs queryset to list of uuid string,
+        # because the choices of MultipleChoiceField is queryset
+        branchs_initial = self.initial["branchs"]
+        if len(branchs_initial) == 0:
+            branchs_initial = [ALL_BRANCHS]
+        else:
+            branchs_initial = [str(b.pk) for b in branchs_initial]
+
+        self.initial["branchs"] = branchs_initial
+        is_no_end_date = (
+            self.initial["effective_end_date"].year == timezone.datetime.max.year
+        )
+
         FormSet = inlineformset_factory(
             Announcement,
             Announcement.attachments.through,
@@ -281,7 +299,7 @@ class AnnouncementUpdateForm(
                                 name="is_no_end_date",
                                 value=None,
                                 template="bootstrap5/checkbox.html",
-                                checked=True,
+                                checked=is_no_end_date,
                                 css_class="d-block",
                             ),
                             css_class="col-12 col-lg-2",
@@ -309,15 +327,6 @@ class AnnouncementUpdateForm(
         )
         self.helper = helper
 
-        branchs = self.instance.branchs.all()
-        self.fields["branchs"].widget.config.update(
-            {
-                "selected": (
-                    ["0"] if branchs.count() == 0 else [str(b.pk) for b in branchs]
-                )
-            }
-        )
-
     def save(self, user=None):
         with transaction.atomic():
             announcement = super().save(False)
@@ -341,5 +350,5 @@ class AnnouncementUpdateForm(
         return super().has_changed() or self.attachment_formset.has_changed()
 
 
-class AnnouncementFilterForm(CleanBranchsMixin, forms.Form):
+class AnnouncementFilterForm(BranchsCleanMixin, forms.Form):
     pass

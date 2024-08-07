@@ -15,8 +15,8 @@ from django.views.generic import (
 )
 from django_filters.views import FilterView
 
-from branch.models import Branch
 from core.utils import my_reverse
+from member.models import Organization
 
 from .filters import ChecklistBranchFilter, ChecklistFilter, ChecklistTemporaryFilter
 from .forms import ChecklistTemplateCreateForm, ChecklistTemplateUpdateForm
@@ -80,15 +80,13 @@ class ChecklistListView(LoginRequiredMixin, ListView):
     template_name = "checklist_list.html"
     model = Checklist
 
-    branch = Branch.objects.first()
-
     def get_queryset(self):
         today = timezone.now().date()
         qs = super().get_queryset()
         return (
             qs.exclude(is_archived=True)
             .filter(
-                branch=self.branch,
+                branch=self.request.user.member_set.all().first().org,
                 effective_start_date__lte=today,
                 effective_end_date__gte=today,
             )
@@ -140,6 +138,10 @@ class ChecklistTemplateUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save(user=self.request.user)
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 class ChecklistTemplateDeleteView(LoginRequiredMixin, DeleteView):

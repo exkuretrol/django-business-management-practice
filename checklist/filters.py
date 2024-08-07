@@ -7,23 +7,26 @@ from django.db.models import F
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from branch.models import Branch
+from core.forms import get_all_branch_choices
 from core.widgets import (
     Bootstrap5TagsSelect,
     Bootstrap5TagsSelectMultiple,
     LitePickerDateInput,
+    Tagify,
+    TagifyMultipleChoiceFilter,
 )
+from member.models import Organization
 
 from .forms import CheckListBranchForm
-from .models import Checklist, PriorityChoices, StatusChoices
+from .models import Checklist, PriorityChoices
 
 
 class ChecklistBranchFilter(filters.FilterSet):
-    branch = filters.ModelChoiceFilter(
-        empty_label=_("請選擇一間門市"),
-        queryset=Branch.objects.all(),
-        widget=Bootstrap5TagsSelect,
+    branch = TagifyMultipleChoiceFilter(
+        widget=Tagify(config={"placeholder": "請選擇一間門市", "maxTags": 1}),
         required=True,
+        # checklist branch filter didn't need all branch option
+        choices=get_all_branch_choices(include_all_branch=False),
     )
 
     class Meta:
@@ -61,16 +64,11 @@ class ChecklistBranchFilter(filters.FilterSet):
 
 
 class ChecklistFilter(filters.FilterSet):
-    all_branches = (0, _("所有門市"))
-    branch_choices = list(Branch.objects.values_list("pk", "name"))
-    branch_choices.insert(0, all_branches)
 
     branchs = filters.MultipleChoiceFilter(
         label=_("門市"),
-        choices=branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(
-            config={"placeholder": "請選擇門市", "allowClear": True},
-        ),
+        choices=get_all_branch_choices,
+        widget=Tagify(config={"placeholder": "請選擇門市"}),
         required=True,
         method="filter_branchs",
     )
@@ -87,6 +85,7 @@ class ChecklistFilter(filters.FilterSet):
         field_name="content",
         label=_("內容"),
         lookup_expr="icontains",
+        widget=Tagify(config={"placeholder": "請輸入待做事項"}),
     )
 
     date = filters.DateFilter(

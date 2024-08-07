@@ -34,7 +34,7 @@ class Announcement(models.Model):
         "core.File", blank=True, verbose_name=_("附件")
     )
     branchs = models.ManyToManyField(
-        "branch.Branch", blank=True, verbose_name=_("門市")
+        "member.Organization", blank=True, verbose_name=_("門市")
     )
     status = models.PositiveSmallIntegerField(
         verbose_name=_("狀態"),

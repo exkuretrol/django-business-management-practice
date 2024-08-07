@@ -7,7 +7,48 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from member.models import Organization
+
 from .models import File
+
+ALL_BRANCHS = "00000000-0000-0000-0000-000000000000"
+
+
+def get_all_branch_choices(include_all_branch=True):
+    l = list(Organization.objects.filter(is_store=True).values_list("pk", "short_name"))
+    if include_all_branch:
+        l.insert(0, (ALL_BRANCHS, _("所有門市")))
+    return l
+
+
+class BranchsCleanMixin:
+    """
+    用於需要回傳當所有門市被選取時，回傳 `Organization.objects.all()` 的表單
+    """
+
+    def clean_branchs(self):
+        branchs = self.cleaned_data["branchs"]
+        if ALL_BRANCHS in branchs:
+            if len(branchs) > 1:
+                self.add_error("branchs", _("不能同時選擇所有門市與其他門市"))
+            return Organization.objects.filter(is_store=True)
+        branchs = Organization.objects.filter(pk__in=branchs)
+        return branchs
+
+
+class BranchsNoneCleanMixin:
+    """
+    用於需要回傳當所有門市被選取時，回傳空的 `Organization.objects.none()` 的表單
+    """
+
+    def clean_branchs(self):
+        branchs = self.cleaned_data["branchs"]
+        if ALL_BRANCHS in branchs:
+            if len(branchs) > 1:
+                self.add_error("branchs", _("不能同時選擇所有門市與其他門市"))
+            return Organization.objects.none()
+        branchs = Organization.objects.filter(pk__in=branchs)
+        return branchs
 
 
 class LoginForm(AuthenticationForm):

@@ -112,7 +112,10 @@
                                             </div> {% endcomment %}
                                             <div class="flex-grow-1 ms-3">
                                                 <h5 class="mb-0">{{ user.username }}</h5>
-                                                <span class="text-body-secondary fst-italic">{{ user.email }}</span>
+                                                <div class="d-flex justify-content-between">
+                                                    <p class="mb-0 text-body-secondary fst-italic">{{ user.email }}</p>
+                                                    <p class="mb-0 text-body-tertiary fst-italic">{{ user.member_set.all.first.org.short_name }}</p>
+                                                </div>
                                             </div>
                                         </div>
                                         {% comment %} User menu link {% endcomment %}

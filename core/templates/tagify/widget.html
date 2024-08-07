@@ -3,7 +3,6 @@
 <script>
     (function() {
         const el = document.getElementById("id_{{ widget.name }}");
-        let config = {{ widget.tagify|safe }}
         const options = [
         {% for group_name, group_choices, group_index in widget.optgroups %}
             {% for option in group_choices %}
@@ -16,7 +15,7 @@
         {% endfor %}];
         const selected_options = options.filter(option => option.selected).map(option => option.label);
 
-        config = Object.assign({}, config, {
+        let config = {
             delimiters: null,
             enforceWhitelist: true,
             whitelist: options,
@@ -49,7 +48,11 @@
                 searchKeys: ['label'],
             },
             originalInputValueFormat: arr => arr.map(item => item.value)
-        });
+        }
+
+        // override default config with user config
+        config = $.extend(true, config, {{ widget.tagify|safe }});
+        console.log(config)
 
         const tagify = new Tagify(el, config);
         // manually add selected options

@@ -75,6 +75,7 @@ class BranchFileUploadFilesView(SingleTableMixin, ListView):
                             declaration_date=form.cleaned_data["declaration_date"],
                             branch=branch,
                             type=form.cleaned_data["type"],
+                            is_latest=False,
                         )
                         bf.save()
                         context[form_name] = form

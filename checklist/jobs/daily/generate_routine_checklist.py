@@ -2,8 +2,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_extensions.management.jobs import DailyJob
 
-from branch.models import Branch
 from checklist.models import Checklist, ChecklistTemplate, PriorityChoices
+from member.models import Organization
 
 
 class Job(DailyJob):
@@ -31,7 +31,7 @@ class Job(DailyJob):
                 effective_start_date=start_date,
                 effective_end_date=end_date,
             )
-            for branch in Branch.objects.all()
+            for branch in Organization.objects.filter(is_store=True)
             for template in checklist_for_all
         ]
 

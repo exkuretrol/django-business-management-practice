@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     "dal_select2",
     # local apps
     "core",
-    "branch",
     "announcement",
     "checklist",
     "member",

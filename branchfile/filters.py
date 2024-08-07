@@ -7,29 +7,22 @@ from django.db.models import OuterRef, Prefetch, Subquery, Value
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from core.widgets import Bootstrap5TagsSelectMultiple, YearMonthWidget
+from core.forms import get_all_branch_choices
+from core.widgets import Tagify, TagifyMultipleChoiceFilter, YearMonthWidget
 from member.models import Organization
 
 from .forms import BranchFileFilterForm, get_year_choices
 from .models import BranchFile, BranchFileTypeChoices, ResultChoices
 
 
-def get_all_branch_choices():
-    l = list(Organization.objects.filter(is_store=True).values_list("pk", "short_name"))
-    l.insert(0, ("00000000-0000-0000-0000-000000000000", _("所有門市")))
-    return l
-
-
 class BranchFileBranchsFilter(filters.FilterSet):
-    branchs = filters.MultipleChoiceFilter(
+    branchs = TagifyMultipleChoiceFilter(
         field_name="branchs",
         label=_("門市"),
         choices=get_all_branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(
-            config={"allowClear": True, "placeholder": _("請選擇門市")}
-        ),
         method="filter_branchs",
         required=True,
+        widget=Tagify(attrs={"placeholder": _("請選擇門市")}),
     )
 
     declaration_date = filters.DateFilter(

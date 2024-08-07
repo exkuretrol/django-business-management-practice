@@ -8,19 +8,24 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from announcement.forms import EffectiveDateCleanMixin
-from branch.forms import CleanBranchsMixin, get_all_branch_choices
-from branch.models import Branch
-from core.widgets import Bootstrap5TagsSelectMultiple, LitePickerDateInput
+from core.forms import (
+    ALL_BRANCHS,
+    BranchsCleanMixin,
+    BranchsNoneCleanMixin,
+    get_all_branch_choices,
+)
+from core.widgets import LitePickerDateInput, Tagify
+from member.models import Organization
 
 from .models import Checklist, ChecklistTemplate, PriorityChoices
 
 
-class CheckListBranchForm(CleanBranchsMixin, forms.Form):
+class CheckListBranchForm(BranchsCleanMixin, forms.Form):
     pass
 
 
 class ChecklistTemplateCreateForm(
-    EffectiveDateCleanMixin, CleanBranchsMixin, forms.ModelForm
+    EffectiveDateCleanMixin, BranchsNoneCleanMixin, forms.ModelForm
 ):
     priority_choices = (
         (PriorityChoices.TEMPORARY, PriorityChoices(PriorityChoices.TEMPORARY).label),
@@ -37,9 +42,7 @@ class ChecklistTemplateCreateForm(
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(
-            config={"placeholder": "請選擇門市", "allowClear": True}
-        ),
+        widget=Tagify(config={"placeholder": _("請選擇門市")}),
     )
 
     class Meta:
@@ -53,7 +56,7 @@ class ChecklistTemplateCreateForm(
         ]
 
         widgets = {
-            "content": forms.TextInput,
+            "content": forms.TextInput(attrs={"placeholder": _("請輸入待做事項")}),
         }
 
         labels = {
@@ -69,8 +72,8 @@ class ChecklistTemplateCreateForm(
         self.save_m2m()
 
         branchs = self.cleaned_data["branchs"]
-        if not branchs.exists():
-            branchs = Branch.objects.all()
+        if branchs.count() == 0:
+            branchs = Organization.objects.filter(is_store=True)
         if self.cleaned_data["priority"] == PriorityChoices.ROUTINE:
             Checklist.objects.bulk_create(
                 [
@@ -141,7 +144,7 @@ class ChecklistTemplateUpdateForm(forms.ModelForm):
     branchs = forms.MultipleChoiceField(
         label=_("門市"),
         choices=get_all_branch_choices,
-        widget=Bootstrap5TagsSelectMultiple(config={"placeholder": "請選擇門市"}),
+        widget=Tagify(),
     )
 
     def save(self, user):
@@ -154,6 +157,7 @@ class ChecklistTemplateUpdateForm(forms.ModelForm):
         form = CheckListBranchForm
         model = ChecklistTemplate
         fields = [
+            "branchs",
             "content",
             "priority",
             "effective_start_date",
@@ -167,14 +171,15 @@ class ChecklistTemplateUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        branchs = self.instance.branchs.all()
-        self.fields["branchs"].widget.config.update(
-            {
-                "selected": (
-                    ["0"] if branchs.count() == 0 else [str(b.pk) for b in branchs]
-                )
-            }
-        )
+
+        # convert branchs to str, because multiple choices instance isn't queryset
+        branchs_initial = self.initial["branchs"]
+        if len(branchs_initial) == 0:
+            branchs_initial = [ALL_BRANCHS]
+        else:
+            branchs_initial = [str(b.pk) for b in branchs_initial]
+
+        self.initial["branchs"] = branchs_initial
 
         form_fields = self.fields
         for field_name in form_fields.keys():

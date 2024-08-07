@@ -2,7 +2,6 @@ const dataset = document.currentScript.dataset;
 
 $(() => {
     const form = $(".content__wrap form").first();
-    const branchs_tag = Tags.getInstance(document.getElementById("id_branchs"));
     const quill = Quill.find(document.getElementById("quill-id_content"));
     const is_no_end_date_label = $("label[for=checkbox-id-is_no_end_date]");
     const announcement_status = $("input[name=status]");
@@ -20,7 +19,6 @@ $(() => {
         }
 
         form.find("input[name=title]").val("");
-        branchs_tag.removeAll();
     });
 
     let attachments_to_delete = [];
@@ -105,14 +103,11 @@ $(() => {
         form.trigger("submit");
     });
 
-    end_date_el = document.getElementById("id_effective_end_date");
+    const end_date_el = document.getElementById("id_effective_end_date");
     let end_date_picker = new Litepicker({
         element: end_date_el,
         lang: "zh-TW",
     });
-
-    end_date_picker.setDate("9999-12-31");
-    $(end_date_el).attr("readonly", true);
 
     is_no_end_date.on("change", (e, el, data) => {
         set_end_picker(e.target);

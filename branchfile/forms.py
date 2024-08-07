@@ -4,10 +4,9 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from core.forms import FileCleanMixin
+from core.forms import BranchsCleanMixin, FileCleanMixin
 from core.models import File, SourceChoices
 from core.widgets import YearMonthWidget
-from member.models import Member, Organization
 
 from .models import BranchFile, BranchFileTypeChoices
 
@@ -148,17 +147,6 @@ class BreakdownOfItemsTableForm(BranchFileUploadFileBaseForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial["type"] = BranchFileTypeChoices.BREAKDOWN_OF_ITEMS_TABLE
-
-
-class BranchsCleanMixin:
-    def clean_branchs(self):
-        branchs = self.cleaned_data["branchs"]
-        if "00000000-0000-0000-0000-000000000000" in branchs:
-            if len(branchs) > 1:
-                self.add_error("branchs", _("不能同時選擇所有門市與其他門市"))
-            return Organization.objects.filter(is_store=True)
-        branchs = Organization.objects.filter(pk__in=branchs)
-        return branchs
 
 
 class BranchFileFilterForm(BranchsCleanMixin, forms.Form):

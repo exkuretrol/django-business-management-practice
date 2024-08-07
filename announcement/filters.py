@@ -12,7 +12,6 @@ from core.widgets import (
     Tagify,
     TagifyMultipleChoiceFilter,
 )
-from member.models import Organization
 
 from .forms import AnnouncementFilterForm
 from .models import Announcement, StatusChoices

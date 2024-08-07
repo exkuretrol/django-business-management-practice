@@ -3,7 +3,7 @@ from crispy_forms.bootstrap import InlineRadios
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 from django import forms
-from django.db.models import OuterRef, Prefetch, Subquery, Value
+from django.db.models import OuterRef, Subquery, Value
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 

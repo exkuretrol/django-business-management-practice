@@ -10,12 +10,10 @@ from django.utils.translation import gettext_lazy as _
 from core.forms import get_all_branch_choices
 from core.widgets import (
     Bootstrap5TagsSelect,
-    Bootstrap5TagsSelectMultiple,
     LitePickerDateInput,
     Tagify,
     TagifyMultipleChoiceFilter,
 )
-from member.models import Organization
 
 from .forms import CheckListBranchForm
 from .models import Checklist, PriorityChoices

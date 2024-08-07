@@ -1,12 +1,11 @@
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import BadRequest, PermissionDenied
-from django.http import FileResponse, HttpRequest, HttpResponseForbidden, JsonResponse
+from django.http import FileResponse, HttpRequest, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-from member.models import Member, Organization
+from member.models import Member
 
 from .forms import FileUploadForm, LoginForm
 from .models import File

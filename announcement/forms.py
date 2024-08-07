@@ -29,7 +29,6 @@ from core.widgets import (
     MyQuillWidget,
     Tagify,
 )
-from member.models import Organization
 
 from .models import Announcement
 

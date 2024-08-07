@@ -2,7 +2,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Button, Div, Layout, Submit
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, F, Q
-from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -16,11 +15,10 @@ from django.views.generic import (
 from django_filters.views import FilterView
 
 from core.utils import my_reverse
-from member.models import Organization
 
 from .filters import ChecklistBranchFilter, ChecklistFilter, ChecklistTemporaryFilter
 from .forms import ChecklistTemplateCreateForm, ChecklistTemplateUpdateForm
-from .models import Checklist, ChecklistTemplate, StatusChoices
+from .models import Checklist, ChecklistTemplate
 
 
 class ChecklistHomeView(TemplateView):

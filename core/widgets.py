@@ -1,9 +1,6 @@
-from collections.abc import Iterable
-from typing import Any, Mapping
-
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
-from django.forms.widgets import HiddenInput, SelectDateWidget
+from django.forms.widgets import SelectDateWidget
 from django_filters import MultipleChoiceFilter
 from django_quill.widgets import QuillWidget
 

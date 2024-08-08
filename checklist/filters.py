@@ -44,12 +44,13 @@ class ChecklistBranchFilter(filters.FilterSet):
         branch = self.request.GET.get("branch", None)
         if branch is None or branch == "":
             return queryset.none()
+        today = timezone.localdate()
 
         queryset = (
             queryset.exclude(is_archived=True)
             .filter(
-                effective_start_date__lte=timezone.now(),
-                effective_end_date__gte=timezone.now(),
+                effective_start_date__lte=today,
+                effective_end_date__gte=today,
             )
             .annotate(
                 priority=F("template_id__priority"),

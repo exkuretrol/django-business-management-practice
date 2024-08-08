@@ -79,9 +79,9 @@ class ChecklistListView(LoginRequiredMixin, ListView):
     model = Checklist
 
     def get_queryset(self):
-        today = timezone.now().date()
+        today = timezone.localdate()
         qs = super().get_queryset()
-        return (
+        queryset = (
             qs.exclude(is_archived=True)
             .filter(
                 branch=self.request.user.member_set.all().first().org,
@@ -93,6 +93,7 @@ class ChecklistListView(LoginRequiredMixin, ListView):
             )
             .order_by("priority", "status")
         )
+        return queryset
 
     def get_progress(self):
         qs = self.get_queryset()

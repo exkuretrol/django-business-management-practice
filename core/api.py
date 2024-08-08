@@ -32,9 +32,17 @@ class Success(MessageSchema):
     obj: Optional[str | int] = None
 
 
-@api.post("/announcement/action", response={200: Success, 400: Error})
+@api.post("/announcement/action", response={200: Success, 400: Error, 403: Error})
 def announcement_action(request, data: AnnouncementActionSchema):
+    user_group = request.user.groupuser_set.first().group
+    if not request.user.is_superuser or not user_group.name == "總部":
+        return 403, {
+            "code": "permission_denied",
+            "message": "Permission denied",
+        }
+
     uuid_list = [announement for announement in data.announcements]
+
     if data.action in ["edit", "delete"]:
         return 400, {
             "code": "action_not_implemented",
@@ -53,16 +61,22 @@ def announcement_action(request, data: AnnouncementActionSchema):
     return 400, {"code": "action_invalid", "message": "Invalid action."}
 
 
-@api.post("/checklist/status", response={200: Success, 400: Error})
+@api.post("/checklist/status", response={200: Success, 400: Error, 403: Error})
 def checklist_change_status(request, data: ChecklistStatusSchema):
-    # TODO: check branch is same as related user branch
     if data.status == "done":
         status = True
     elif data.status == "todo":
         status = False
 
+    user_branch = request.user.member_set.first().org
     try:
         checklist = Checklist.objects.get(uuid=data.checklist)
+
+        if checklist.branch != user_branch:
+            return {
+                "code": "permission_denied",
+                "message": "Permission denied",
+            }
         checklist.status = status
         checklist.last_modified_by = request.user
         checklist.save()

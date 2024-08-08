@@ -75,13 +75,14 @@ class ChecklistTemplateCreateForm(
         if branchs.count() == 0:
             branchs = Organization.objects.filter(is_store=True)
         if self.cleaned_data["priority"] == PriorityChoices.ROUTINE:
+            today = timezone.localdate()
             Checklist.objects.bulk_create(
                 [
                     Checklist(
                         template_id=self.instance,
                         branch=branch,
-                        effective_start_date=timezone.localdate(),
-                        effective_end_date=timezone.localdate(),
+                        effective_start_date=today,
+                        effective_end_date=today,
                     )
                     for branch in branchs
                 ]

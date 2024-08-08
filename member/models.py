@@ -11,7 +11,7 @@ class Organization(models.Model):
     cost_center = models.CharField(
         max_length=20, verbose_name="成本中心", blank=True, default=""
     )
-    org_code = models.CharField(
+    sno = models.CharField(
         max_length=20, verbose_name="藥局代號", blank=True, default=""
     )
     name = models.CharField(max_length=128, verbose_name="組織名稱")
